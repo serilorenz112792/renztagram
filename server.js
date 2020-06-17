@@ -7,7 +7,7 @@ require('dotenv').config()
 
 let DB = process.env.MONGO_URI
 let DB2 = process.env.LOCAL_MONGO_URI
-mongoose.connect(DB2, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }, () => {
+mongoose.connect(DB, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }, () => {
     try {
         console.log("connected on mongo")
     }
