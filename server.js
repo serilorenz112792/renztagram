@@ -3,7 +3,10 @@ const mongoose = require('mongoose')
 const app = express()
 app.use(express.json())
 require('dotenv').config()
-mongoose.connect(process.env.MONGO_URI, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }, () => {
+
+let DB = process.env.MONGO_URI
+let DB2 = process.env.LOCAL_MONGO_URI
+mongoose.connect(DB, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }, () => {
     try {
         console.log("connected on mongo")
     }

@@ -264,7 +264,7 @@ const Post = (props) => {
 
                             </Grid>
 
-                            <Grid style={{ margin: 0, padding: 0 }} item xs={12}>
+                            <Grid style={{ margin: 0, paddingTop: 10 }} item xs={12}>
                                 <Divider />
                             </Grid>
                             <Grid className={classes.commentGrid} item xs={12}>

@@ -15,6 +15,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Avatar from '@material-ui/core/Avatar';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import HomeIcon from '@material-ui/icons/Home';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
@@ -193,6 +194,17 @@ const NavBar = (props) => {
                     </Badge>
                 </IconButton>
                 <p>Notifications</p>
+            </MenuItem>
+            <MenuItem onClick={handleMobileMenuClose}>
+                <IconButton
+                    aria-label="account of current user"
+                    aria-controls="primary-search-account-menu"
+                    aria-haspopup="true"
+                    color="inherit"
+                >
+                    <HomeIcon />
+                </IconButton>
+                <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/home`}>Home</NavLink>
             </MenuItem>
             <MenuItem onClick={handleMobileMenuClose}>
                 <IconButton
