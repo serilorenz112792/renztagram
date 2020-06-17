@@ -10,6 +10,8 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import CommentIcon from '@material-ui/icons/Comment';
 import MuiAlert from '@material-ui/lab/Alert';
 import CommentsContainer from './comments'
+import dotenv from 'dotenv'
+dotenv.config()
 const useStyles = makeStyles((theme) => ({
     root: {
         paddingBottom: 40
@@ -128,9 +130,18 @@ const Post = (props) => {
     //console.log("myComments", myComments[0] && myComments[0].comments)
     //const email = username.email.substring(0)
     //console.log(myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.substring(0, myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.lastIndexOf("@")))
+    console.log("myUsers", myUsers)
+    console.log("myProfile", myProfile)
     useEffect(() => {
-        setProfilePicPath(`http://localhost:5999/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
-        setPostImagePath(`http://localhost:5999/${post && post.imgPath}`)
+        if (process.env.NODE_ENV === 'production') {
+            setProfilePicPath(`https://renztagram.herokuapp.com/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
+            setPostImagePath(`https://renztagram.herokuapp.com/${post && post.imgPath}`)
+        }
+        else {
+            setProfilePicPath(`http://localhost:5999/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
+            setPostImagePath(`http://localhost:5999/${post && post.imgPath}`)
+        }
+
         if (comment === '') {
             setIsCommentBtnDisable(true)
 

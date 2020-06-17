@@ -21,6 +21,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 import { fetchUserProfileAction } from '../profilepage/action'
+import dotenv from 'dotenv'
+dotenv.config()
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
@@ -209,7 +211,13 @@ const NavBar = (props) => {
 
     useEffect(() => {
         FetchUserProfile()
-        setProfileImageUrl(`http://localhost:5999/`)
+        if (process.env.NODE_ENV === 'production') {
+            setProfileImageUrl(`https://renztagram.herokuapp.com`)
+        }
+        else {
+            setProfileImageUrl(`http://localhost:5999/`)
+        }
+
     }, [profileImageUrl])
 
     //console.log("userInfo", userInfo[0] && userInfo[0].profileImagePath)
