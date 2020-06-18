@@ -9,6 +9,7 @@ import {
     ADD_POST_SUCCESS,
     ADD_POST_FAILED,
     CLEAR_MESSAGE,
+    ADD_LINEAR_PROGRESS,
     FETCH_COMMENT_SUCCESS
 
 }
@@ -22,6 +23,7 @@ const initialState = {
     msg: '',
     addPostMsg: '',
     isAddPostLoading: false,
+
     error: {}
 }
 
@@ -85,7 +87,7 @@ const homeReducer = (state = initialState, action) => {
                 ...state,
                 addPostMsg: payload.msg,
                 error: payload.error,
-                isAddPostLoading: false
+                isAddPostLoading: false,
             }
         case CLEAR_MESSAGE:
             return {
@@ -93,6 +95,7 @@ const homeReducer = (state = initialState, action) => {
                 msg: '',
                 addPostMsg: ''
             }
+
         default:
             return state
     }

@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import {
     Paper, Card, Grid, CardMedia, CardContent, CardActionArea,
     IconButton, InputAdornment, TextField, Avatar, Divider, Typography, Button,
-    Collapse, CircularProgress, Snackbar
+    Collapse, CircularProgress, Snackbar,
 } from '@material-ui/core'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import CommentIcon from '@material-ui/icons/Comment';
@@ -102,11 +102,13 @@ const useStyles = makeStyles((theme) => ({
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
 const Post = (props) => {
     const classes = useStyles()
     const { post, profile, auth, home, index, history, AddComment, ClearMsg } = props
     const [profilePicPath, setProfilePicPath] = useState('')
     const [postImagePath, setPostImagePath] = useState('')
+    const [imageFile, setImageFile] = useState('')
     const [comment, setComment] = useState('')
     const [isCommentActive, setIsCommentActive] = useState(false)
     const [isCommentBtnDisable, setIsCommentBtnDisable] = useState(false)
@@ -116,6 +118,8 @@ const Post = (props) => {
     const [collapse, setCollapse] = useState(false)
     const [severity, setSeverity] = useState('')
     const [msg, setMsg] = useState('')
+
+
 
     const [commentCreator, setCommentCreator] = useState('')
     const [commentContent, setCommentContent] = useState('')
@@ -130,8 +134,10 @@ const Post = (props) => {
     //console.log("myComments", myComments[0] && myComments[0].comments)
     //const email = username.email.substring(0)
     //console.log(myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.substring(0, myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.lastIndexOf("@")))
-    console.log("myUsers", myUsers)
-    console.log("myProfile", myProfile)
+    //console.log("myUsers", myUsers)
+    console.log("myProfile", post)
+
+
     useEffect(() => {
         if (process.env.NODE_ENV === 'production') {
             setProfilePicPath(`https://renztagram.herokuapp.com/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
@@ -167,6 +173,9 @@ const Post = (props) => {
         setCommentCreator(myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.substring(0, myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.lastIndexOf("@")))
         setCommentContent(myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].comment)
 
+
+        //SET BUFFER TO BASE64
+        setImageFile(arrayBufferToBase64(post.imgFile.data.data))
     }, [myProfile, post._id, post.comments && post.comments.comment, props, isCommentBtnDisable, commentContent, commentCreator])
     const handleCollapse = () => {
         setCollapse(!collapse)
@@ -203,6 +212,12 @@ const Post = (props) => {
         //console.log("DATA", data)
         AddComment(data)
     }
+    function arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = [].slice.call(new Uint8Array(buffer));
+        bytes.forEach((b) => binary += String.fromCharCode(b));
+        return window.btoa(binary);
+    }
     //console.log("post", post)
     //console.log("postImagePath", postImagePath)
     return (
@@ -228,11 +243,12 @@ const Post = (props) => {
                                             className={classes.userInfoCardMedia}
                                             component="img"
                                             alt="item img"
-
-                                            image={postImagePath}
+                                            image={`data:image/jpeg;base64,${imageFile}`}
+                                            //image={postImagePath}
                                             title={post.title}
                                         />
                                     </div>
+
                                 </Paper>
                             </Grid>
                             <Grid className={classes.iconsGrid} item xs={12}>

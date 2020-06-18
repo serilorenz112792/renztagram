@@ -50,6 +50,10 @@ router.get('/user-profile', authentication, async (req, res) => {
 
 router.post('/user-profile', upload.single('profilePicture'), (req, res) => {
     const { userId, age, birthday } = req.body
+    const img = fs.readFileSync(req.file.path)
+    const encodeImg = img.toString('base64')
+    //console.log("encondeimg", encodeImg)
+    const type = req.file.mimetype
     let userProfile = {}
     if (req.file === undefined || req.file.path === undefined) {
         userProfile = UserProfile({
@@ -63,7 +67,11 @@ router.post('/user-profile', upload.single('profilePicture'), (req, res) => {
             userId,
             age,
             birthday,
-            profileImagePath: req.file.path
+            profileImagePath: req.file.path,
+            profileImageFile: {
+                data: new Buffer(encodeImg, 'base64'),
+                contentType: type
+            }
         })
     }
     userProfile.save()

@@ -4,6 +4,10 @@ const schema = mongoose.Schema
 const postSchema = schema({
     title: String,
     imgPath: String,
+    imgFile: {
+        data: Buffer,
+        contentType: String
+    },
     createdBy: {
         type: String
     },

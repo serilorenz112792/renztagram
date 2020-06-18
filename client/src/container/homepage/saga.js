@@ -1,4 +1,4 @@
-import { takeLatest, put, select, all, call } from 'redux-saga/effects'
+import { takeLatest, put, select, all, call, delay } from 'redux-saga/effects'
 import { fetchPostApi, fetchCommentApi, addCommentApi, addPostApi } from '../../api/posts/postapi'
 import { FETCH_POST, FETCH_COMMENT, ADD_COMMENT, ADD_POST } from './constants'
 import {
@@ -70,6 +70,7 @@ function* AddPostSaga(action) {
     try {
         const response = yield call(addPostApi, data)
         if (response.status === 200) {
+            yield delay(3000)
             yield put(addPostSuccessAction(response.data))
             yield put(fetchPostAction())
         }

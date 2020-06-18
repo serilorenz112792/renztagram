@@ -2,16 +2,22 @@ const express = require('express')
 const Post = require('../model/post')
 const User = require('../model/user')
 const router = express.Router()
+var fs = require('fs')
 
 const authentication = require('../middleware/authentication')
 
 const upload = require('../middleware/multer')
 
 
-router.get('/fetch-post', authentication, async (req, res) => {
+router.get('/fetch-post', async (req, res) => {
+
+
+
     await Post.find()
         .then((posts) => {
             res.status(200).json(posts)
+
+
         })
         .catch(err => {
             res.status(400).json({ msg: 'Failed to fetch posts!', error: err })
@@ -29,9 +35,17 @@ router.get('/fetch-comment/', async (req, res) => {
         })
 })
 
-router.post('/add-post', upload.single('postImage'), authentication, async (req, res) => {
+router.post('/add-post', upload.single('postImage'), async (req, res) => {
+
     const { title, userId } = req.body
-    let newPost = {}
+
+    const img = fs.readFileSync(req.file.path)
+    const encodeImg = img.toString('base64')
+    //console.log("encondeimg", encodeImg)
+    const type = req.file.mimetype
+
+    // console.log("IMG", img)
+    // let newPost = {}
     if (req.file === undefined || req.file.path === undefined) {
         newPost = Post({
             title,
@@ -42,7 +56,11 @@ router.post('/add-post', upload.single('postImage'), authentication, async (req,
         newPost = Post({
             title,
             createdBy: userId,
-            imgPath: req.file.path
+            imgPath: req.file.path,
+            imgFile: {
+                data: new Buffer(encodeImg, 'base64'),
+                contentType: type
+            }
         })
     }
     newPost
@@ -54,6 +72,33 @@ router.post('/add-post', upload.single('postImage'), authentication, async (req,
             res.status(400).json({ msg: 'Failed to created!', error: err })
         })
 })
+
+//IMAGE FILE PATH ONLY
+// router.post('/add-post', upload.single('postImage'), authentication, async (req, res) => {
+//     const { title, userId } = req.body
+//     let newPost = {}
+//     if (req.file === undefined || req.file.path === undefined) {
+//         newPost = Post({
+//             title,
+//             createdBy: userId
+//         })
+//     }
+//     else {
+//         newPost = Post({
+//             title,
+//             createdBy: userId,
+//             imgPath: req.file.path
+//         })
+//     }
+//     newPost
+//         .save()
+//         .then(() => {
+//             res.status(200).json({ msg: 'Post created!' })
+//         })
+//         .catch(err => {
+//             res.status(400).json({ msg: 'Failed to created!', error: err })
+//         })
+// })
 
 router.patch('/edit-post/:id', upload.single('postImage'), authentication, async (req, res) => {
     const { title } = req.body

@@ -5,6 +5,10 @@ const schema = mongoose.Schema
 const UserProfileSchema = schema({
     friends: [Object],
     userId: String,
+    profileImageFile: {
+        data: Buffer,
+        contentType: String
+    },
     profileImagePath: String,
     age: Number,
     birthday: Date

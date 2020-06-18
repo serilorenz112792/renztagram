@@ -15,6 +15,7 @@ import {
     ADD_POST_SUCCESS,
     ADD_POST_FAILED,
 
+    ADD_LINEAR_PROGRESS,
     CLEAR_MESSAGE
 
 
@@ -104,6 +105,8 @@ export const addPostFailedAction = errorInfo => {
         payload: errorInfo
     }
 }
+
+
 
 export const clearMessageAction = () => {
     return {

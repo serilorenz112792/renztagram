@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import UnauthorizedPage from '../unauthorizedpage'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar } from '@material-ui/core'
+import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar, Typography, } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MuiAlert from '@material-ui/lab/Alert';
 import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, addPostAction } from './action'
@@ -15,6 +15,7 @@ import { set } from 'mongoose'
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
 const useStyles = makeStyles((theme) => ({
     root2: {
         paddingTop: 50,
@@ -77,8 +78,9 @@ const HomePage = (props) => {
     const classes = useStyles()
     const { auth, home, profile, FetchPost,
         FetchComment, FetchUserProfiles, FetchUsers,
-        AddComment, AddPost, ClearMsg, history } = props
+        AddComment, AddPost, AddLinearProgress, ClearMsg, history } = props
     const [modalState, setModalState] = useState(false)
+
     // const [openSnack, setOpenSnack] = useState(false)
     // const [severity, setSeverity] = useState(false)
     // const [addPostMsg, setAddPostMsg] = useState('')
@@ -114,6 +116,7 @@ const HomePage = (props) => {
                             {addPostMsg}
                         </Alert>
                     </Snackbar> */}
+
                     <AddPostModal ClearMsg={ClearMsg} home={home} auth={auth} AddPost={AddPost} state={modalState} handleClose={handleClose} />
                     <Grid item lg={8} md={8} sm={12} xs={12}>
                         {

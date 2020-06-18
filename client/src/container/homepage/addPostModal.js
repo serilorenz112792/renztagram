@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import {
     Dialog, DialogTitle, DialogContent, DialogActions,
-    TextField, Typography, Grid, Button, Divider, Snackbar, CircularProgress
+    TextField, Typography, Grid, Button, Divider, Snackbar, CircularProgress, LinearProgress, Box
 } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
@@ -35,9 +35,10 @@ const useStyles = makeStyles((theme) => ({
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
 const AddPostModal = props => {
     const classes = useStyles()
-    const { state, handleClose, auth, home, AddPost, ClearMsg } = props
+    const { state, handleClose, auth, home, AddPost, AddLinearProgress, ClearMsg } = props
     const [modalState, setModalState] = useState(false)
     const [caption, setCaption] = useState('')
     const [imgUrl, setImgUrl] = useState('')
@@ -47,19 +48,19 @@ const AddPostModal = props => {
     const [btnDisable, setBtnDisable] = useState(false)
     const [postBtnDisable, setPostBtnDisable] = useState(true)
     const [msg, setMsg] = useState('')
+    const [progress, setProgress] = useState(0)
 
     useEffect(() => {
         setModalState(state)
         if (home.addPostMsg && home.addPostMsg.msg === 'Post created!') {
+            setBtnDisable(false)
             handleCloseModal()
             ClearMsg()
         }
-        if (home.isAddPostLoading) {
-            setBtnDisable(true)
-        }
-        if (!home.isAddPostLoading) {
-            setBtnDisable(false)
-        }
+
+        // if (!home.isAddPostLoading) {
+        //     setBtnDisable(false)
+        // }
         if (imgData && imgData.name === '' || caption === '') {
             setPostBtnDisable(true)
         }
@@ -67,10 +68,15 @@ const AddPostModal = props => {
         if (imgData && imgData.name !== '' && imgData.name !== undefined && caption !== '') {
             setPostBtnDisable(false)
         }
+        if (home.isAddPostLoading) {
+            setBtnDisable(true)
+            setPostBtnDisable(true)
+        }
 
     }, [props, caption, postBtnDisable, imgData])
-    //console.log("POSTBTNDISABLE", postBtnDisable)
+
     //console.log("imgData", imgData.name)
+    //console.log("home", progress)
     const handleCloseSnack = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -113,6 +119,7 @@ const AddPostModal = props => {
         }
         //console.log("data", data)
         AddPost(data)
+        //handleCloseModal()
     }
     const handleChangeCaption = (e) => {
         // if (e.target.value !== '' || e.target.value !== null) {
@@ -138,6 +145,9 @@ const AddPostModal = props => {
         >
             <DialogTitle>
                 <Typography className={classes.dialogTitle} variant="h5">Yes sir!</Typography>
+                {home.isAddPostLoading ? <div className={classes.root}>
+                    <LinearProgress color="secondary" variant="indeterminate" />
+                </div> : null}
             </DialogTitle>
             <Divider />
             <DialogContent>
@@ -163,14 +173,15 @@ const AddPostModal = props => {
             </DialogContent>
             <Divider />
             <DialogActions>
-                {home.isAddPostLoading ? <CircularProgress color="secondary" /> : <Button disabled={postBtnDisable} onClick={handleSubmitPost} className={classes.postBtn} variant="contained" color="primary">Post</Button>}
+                {/* {home.isAddPostLoading ? <CircularProgress color="secondary" /> : <Button disabled={postBtnDisable} onClick={handleSubmitPost} className={classes.postBtn} variant="contained" color="primary">Post</Button>} */}
+                <Button disabled={postBtnDisable} onClick={handleSubmitPost} className={classes.postBtn} variant="contained" color="primary">Post</Button>
                 <Button disabled={btnDisable} className={classes.cancelBtn} onClick={handleCloseModal} variant="contained" color="default">Cancel</Button>
             </DialogActions>
-            <Snackbar open={openSnack} autoHideDuration={3000} onClose={handleCloseSnack}>
+            {/* <Snackbar open={openSnack} autoHideDuration={3000} onClose={handleCloseSnack}>
                 <Alert onClose={handleCloseSnack} severity={severity}>
                     {msg}
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
         </Dialog>
     )
 }
