@@ -224,7 +224,7 @@ const NavBar = (props) => {
     useEffect(() => {
         FetchUserProfile()
         if (process.env.NODE_ENV === 'production') {
-            setProfileImageUrl(`https://renztagram.herokuapp.com`)
+            setProfileImageUrl(`https://renztagram.herokuapp.com/`)
         }
         else {
             setProfileImageUrl(`http://localhost:5999/`)

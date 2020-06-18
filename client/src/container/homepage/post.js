@@ -175,7 +175,7 @@ const Post = (props) => {
 
 
         //SET BUFFER TO BASE64
-        setImageFile(arrayBufferToBase64(post.imgFile.data.data))
+        setImageFile(arrayBufferToBase64(post.imgFile && post.imgFile.data.data))
     }, [myProfile, post._id, post.comments && post.comments.comment, props, isCommentBtnDisable, commentContent, commentCreator])
     const handleCollapse = () => {
         setCollapse(!collapse)

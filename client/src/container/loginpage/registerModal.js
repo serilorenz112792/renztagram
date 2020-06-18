@@ -182,7 +182,7 @@ const RegisterModal = (props) => {
                     <Button className={classes.registerBtn} onClick={handleRegister} variant="contained" color="primary">Register</Button>
                 }
 
-                <Button className={classes.cancelBtn} onClick={handleCloseModal} variant="contained" color="default">Cancer</Button>
+                <Button className={classes.cancelBtn} onClick={handleCloseModal} variant="contained" color="default">Cancel</Button>
 
 
             </DialogActions>

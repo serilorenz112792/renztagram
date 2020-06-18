@@ -35,7 +35,7 @@ router.get('/fetch-comment/', async (req, res) => {
         })
 })
 
-router.post('/add-post', upload.single('postImage'), async (req, res) => {
+router.post('/add-post', upload.single('postImage'), authentication, async (req, res) => {
 
     const { title, userId } = req.body
 
