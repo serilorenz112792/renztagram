@@ -15,10 +15,11 @@ const useStyles = makeStyles({
         backgroundRepeat: 'no-repeat'
     },
     gridTitle: {
-        padding: 100
+        paddingTop: 100
     },
     title: {
-        color: "#FFF"
+        color: "#FFF",
+        textAlign: 'center'
     },
     backBtn: {
         backgroundColor: '#024f14',

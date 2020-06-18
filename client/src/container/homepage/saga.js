@@ -70,7 +70,7 @@ function* AddPostSaga(action) {
     try {
         const response = yield call(addPostApi, data)
         if (response.status === 200) {
-            yield delay(3000)
+            //yield delay(3000)
             yield put(addPostSuccessAction(response.data))
             yield put(fetchPostAction())
         }

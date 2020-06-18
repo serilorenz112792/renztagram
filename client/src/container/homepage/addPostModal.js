@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles'
 import nophoto from '../../assets/nophoto.png'
@@ -159,7 +160,7 @@ const AddPostModal = props => {
                                 <PhotoCamera />
                             </IconButton>
                         </label>
-                        {imgUrl ? <img style={{ width: 330, height: 230 }} src={imgUrl} alt="Renztagram Image" /> : <img style={{ width: 330, height: 230 }} src={nophoto} alt="Food Pic" />}
+                        {imgUrl ? <img style={{ width: 330, height: 230 }} src={imgUrl} alt="Renztagram Image" /> : <AddAPhotoIcon style={{ width: 330, height: 230 }} />}
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
