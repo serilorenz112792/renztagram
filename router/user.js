@@ -6,6 +6,7 @@ const upload = require('../middleware/multer')
 const UserProfile = require('../model/user-profile')
 const Post = require('../model/post')
 const authentication = require('../middleware/authentication')
+const fs = require('fs')
 
 router.post('/register', async (req, res) => {
     const { firstName, lastName, email, password } = req.body
@@ -19,10 +20,27 @@ router.post('/register', async (req, res) => {
         email,
         password
     })
-    bcrypt.hash(password, 10, (err, hash) => {
+    let newUserProfile = UserProfile({
+        followers: [],
+        following: [],
+        userId: '',
+        profileImageFile: {
+            data: [],
+            contentType: ''
+        },
+        profileImagePath: '',
+        age: 0,
+        birthday: new Date().toISOString(),
+        gender: 'Male',
+        motto: '',
+        isPrivate: false,
+    })
+    bcrypt.hash(password, 10, async (err, hash) => {
         if (err) return json.status(400).json({ error: err })
         newUser.password = hash
-        newUser.save()
+        const newU = await newUser.save()
+        newUserProfile.userId = newU._id
+        await newUserProfile.save()
             .then(() => {
                 res.status(200).json({ msg: 'Registered successfully!' })
             })
@@ -48,59 +66,88 @@ router.get('/user-profile', authentication, async (req, res) => {
         })
 })
 
-router.post('/user-profile', upload.single('profilePicture'), (req, res) => {
-    const { userId, age, birthday } = req.body
-    const img = fs.readFileSync(req.file.path)
-    const encodeImg = img.toString('base64')
-    //console.log("encondeimg", encodeImg)
-    const type = req.file.mimetype
-    let userProfile = {}
+router.put('/edit-profile-picture', upload.single('profilePicture'), authentication, async (req, res) => {
+    const { userId } = req.body
+    let img
+    let encodeImg
+    let type
+    let userProfile
     if (req.file === undefined || req.file.path === undefined) {
-        userProfile = UserProfile({
-            userId,
-            age,
-            birthday
-        })
+        userProfile = {
+            profileImageFile: {
+                data: [],
+                contentType: ''
+            }
+        }
     }
     else {
-        userProfile = UserProfile({
-            userId,
-            age,
-            birthday,
-            profileImagePath: req.file.path,
+        img = fs.readFileSync(req.file.path)
+        encodeImg = img.toString('base64')
+        type = req.file.mimetype
+        userProfile = {
             profileImageFile: {
                 data: new Buffer(encodeImg, 'base64'),
                 contentType: type
             }
-        })
+
+        }
     }
-    userProfile.save()
+    await UserProfile.findOneAndUpdate({ userId: userId }, userProfile)
         .then(() => {
-            res.status(200).json({ msg: 'Profile info saved!' })
+            res.status(200).json({ msg: 'Profile picture is updated!' })
         })
         .catch(err => {
-            res.status(400).json({ msg: 'Failed to save user profile!', error: err })
+            res.status(400).json({ msg: 'Failed to update profile picture!', error: err })
         })
+
 })
 
-router.put('/user-edit-profile/:id', upload.single('profilePicture'), async (req, res) => {
-    let userProfile = {}
-    if (req.file === undefined || req.file.path === undefined) {
-        userProfile = {
-            userId,
-            age,
-            birthday
-        }
+// router.post('/user-profile', upload.single('profilePicture'), (req, res) => {
+//     const { userId, age, birthday, firstName, lastName, gender, motto, isPrivate } = req.body
+//     const img = fs.readFileSync(req.file.path)
+//     const encodeImg = img.toString('base64')
+//     //console.log("encondeimg", encodeImg)
+//     const type = req.file.mimetype
+//     let userProfile = {}
+//     if (req.file === undefined || req.file.path === undefined) {
+//         userProfile = UserProfile({
+//             userId,
+//             age,
+//             birthday
+//         })
+//     }
+//     else {
+//         userProfile = UserProfile({
+//             userId,
+//             age,
+//             birthday,
+//             profileImagePath: req.file.path,
+//             profileImageFile: {
+//                 data: new Buffer(encodeImg, 'base64'),
+//                 contentType: type
+//             }
+//         })
+//     }
+//     userProfile.save()
+//         .then(() => {
+//             res.status(200).json({ msg: 'Profile info saved!' })
+//         })
+//         .catch(err => {
+//             res.status(400).json({ msg: 'Failed to save user profile!', error: err })
+//         })
+// })
+
+router.put('/edit-profile-info', authentication, async (req, res) => {
+    const { userId, firstName, lastName, gender, age, birthday, motto, isPrivate } = req.body
+
+    const userProfileData = {
+        userId, gender, age, birthday: new Date(birthday).toISOString(), motto, isPrivate
     }
-    else {
-        userProfile = {
-            userId,
-            age,
-            birthday,
-            profileImagePath: req.file.path
-        }
+    const userData = {
+        firstName, lastName
     }
-    await UserProfile.findByIdAndUpdate(req.params.id)
+    await User.findOneAndUpdate({ _id: userId }, userData)
+    await UserProfile.findOneAndUpdate({ userId: userId }, userProfileData)
         .then(() => {
             res.status(200).json({ msg: 'Profile info editted!' })
         })
@@ -111,7 +158,7 @@ router.put('/user-edit-profile/:id', upload.single('profilePicture'), async (req
 
 
 //ADD COMMENTS
-router.post('/add-comment', async (req, res) => {
+router.post('/add-comment', authentication, async (req, res) => {
     const { email, userId, comment, postId, commentId } = req.body
     const newComment = {
         email, userId, comment, commentId
@@ -127,5 +174,89 @@ router.post('/add-comment', async (req, res) => {
         })
 })
 
+
+router.put('/change-password/:id', authentication, async (req, res) => {
+    const { password, newPassword, confirmNewPassword } = req.body
+    if (password === '' || newPassword === '' || confirmNewPassword === '') return res.status(400).json({ msg: 'All fields are required!' })
+    if (newPassword !== confirmNewPassword) return res.status(400).json({ msg: 'Password and new password must match!' })
+    await User.findById(req.params.id)
+        .then((user) => {
+            bcrypt.compare(password, user.password).then((isMatch) => {
+                if (!isMatch) return res.status(400).json({ msg: 'Incorrect password!' })
+
+                bcrypt.hash(newPassword, 10, (err, hash) => {
+                    if (err) return res.status(400).json({ error: err })
+
+                    User.findByIdAndUpdate(user._id, { password: hash })
+                        .then(() => {
+                            res.status(200).json({ msg: 'Password changed!' })
+                        })
+                        .catch(err => {
+                            res.status(400).json({ msg: 'Failed to change password!', error: err })
+                        })
+                })
+
+            })
+        })
+})
+
+
+//friend request endpoint
+router.post('/follow-friend', authentication, async (req, res) => {
+
+    const { myId, myFirstName, myLastName, userId, firstName, lastName, imgData, myImgData } = req.body
+    const friendInfo = {
+        //userId, firstName, lastName, profileImageFile: imgData
+        userId, firstName, lastName
+    }
+    const myInfo = {
+        //userId: myId, firstName: myFirstName, lastName: myLastName, profileImageFile: myImgData
+        userId: myId, firstName: myFirstName, lastName: myLastName
+    }
+
+    //friends profile
+    const myProfile = await UserProfile.findOne({ userId: myId })
+    //my profile
+    const friendProfile = await UserProfile.findOne({ userId: userId })
+    friendProfile.followers.push(myInfo)
+    friendProfile.save()
+    myProfile.following.push(friendInfo)
+    myProfile.save()
+        .then(() => {
+            res.status(200).json({ msg: 'Congrats you\'re following this person!' })
+        })
+        .catch(err => {
+            res.status(400).json({ msg: 'Something went wrong!', error: err })
+        })
+
+
+})
+
+
+router.put('/unfollow-friend', async (req, res) => {
+    console.log("triggered unfolow")
+    const { myId, userId } = req.body
+    const friendProfile = await UserProfile.findOne({ userId: userId })
+    const myProfile = await UserProfile.findOne({ userId: myId })
+    //console.log("friendProfile", friendProfile)
+    //console.log("myProfile", myProfile)
+    await UserProfile.update({ userId: myId }, { $pull: { following: { userId: userId } } })
+        .then(() => {
+            console.log("updated successfully!")
+        })
+    //friendProfile.save()
+    await UserProfile.update({ userId: userId }, { $pull: { followers: { userId: myId } } })
+        //myProfile.save()
+        .then(() => {
+            res.status(200).json({ msg: 'You\'re no longer a follower of this shit!' })
+        })
+        .catch(err => {
+            res.status(400).json({ msg: 'Someting went wrong!', error: err })
+        })
+})
+
+// router.put('/friend-request-confirmation', (req,res) => {
+//     const { accept, decline, }
+// })
 
 module.exports = router

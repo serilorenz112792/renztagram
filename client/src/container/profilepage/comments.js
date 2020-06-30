@@ -13,11 +13,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 const CommentsContainer = (props) => {
     const classes = useStyles()
-    const { comments, handleGotoProfileViaCommentSectionWithAllComments } = props
-    //alert('triggered')
+    const { comments, handleGotoProfileViaCommentSectionWithAllComments, userIdThruAuth, userId } = props
+    //alert('triggered') 
     return (
         <Grid container>
             <Grid item xs={12}>
+
                 <Typography variant="body1"><span onClick={() => handleGotoProfileViaCommentSectionWithAllComments(comments.userId)} className={classes.commentCreator}>{comments.email.substring(0, comments.email.lastIndexOf("@"))}</span> <span className={classes.commentContent}>{comments.comment}</span></Typography>
             </Grid>
         </Grid>

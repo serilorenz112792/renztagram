@@ -25,3 +25,7 @@ export async function addPostApi({ auth, userId, title, imgData }) {
     return await axios.post('/api/post/add-post', bodyFormData, tokenConfigFormData(auth))
 }
 
+export async function deletePostApi({ postId, auth }) {
+    return await axios.delete(`/api/post/delete-post/${postId}`, tokenConfig(auth))
+}
+

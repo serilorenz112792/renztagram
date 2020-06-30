@@ -1,10 +1,10 @@
 import { takeLatest, put, select, all, call, delay } from 'redux-saga/effects'
-import { fetchPostApi, fetchCommentApi, addCommentApi, addPostApi } from '../../api/posts/postapi'
-import { FETCH_POST, FETCH_COMMENT, ADD_COMMENT, ADD_POST } from './constants'
+import { fetchPostApi, fetchCommentApi, addCommentApi, addPostApi, deletePostApi } from '../../api/posts/postapi'
+import { FETCH_POST, FETCH_COMMENT, ADD_COMMENT, ADD_POST, DELETE_POST } from './constants'
 import {
     fetchPostAction, fetchCommentAction, fetchPostSuccessAction, fetchPostFailedAction, fetchCommentSuccessAction,
-    fetchCommentFailedAction, addCommentFailedAction, addCommentSuccessAction,
-    addPostSuccessAction, addPostFailedAction
+    fetchCommentFailedAction, addCommentFailedAction, addCommentSuccessAction, clearMessageAction,
+    addPostSuccessAction, addPostFailedAction, deletePostSuccessAction, deletePostFailedAction
 } from './action'
 
 const authState = state => state.auth
@@ -14,6 +14,7 @@ function* FetchPostSaga() {
         const response = yield call(fetchPostApi, auth)
         if (response.status === 200) {
             yield put(fetchPostSuccessAction(response.data))
+            yield put(clearMessageAction())
         }
     }
     catch (err) {
@@ -79,11 +80,31 @@ function* AddPostSaga(action) {
         yield put(addPostFailedAction(err.response.data))
     }
 }
+
+function* DeletePostSaga(action) {
+    const { postId } = action.payload
+    const auth = yield select(authState)
+    const data = {
+        postId,
+        auth
+    }
+    try {
+        const response = yield call(deletePostApi, data)
+        if (response.status === 200) {
+            yield put(deletePostSuccessAction(response.data))
+            //yield put(fetchPostAction())
+        }
+    }
+    catch (err) {
+        yield put(deletePostFailedAction(err.response.data))
+    }
+}
 export default function* HomeSaga() {
     yield all([
         takeLatest(FETCH_POST, FetchPostSaga),
         takeLatest(FETCH_COMMENT, FetchCommentSaga),
         takeLatest(ADD_COMMENT, AddCommentsaga),
-        takeLatest(ADD_POST, AddPostSaga)
+        takeLatest(ADD_POST, AddPostSaga),
+        takeLatest(DELETE_POST, DeletePostSaga)
     ])
 }

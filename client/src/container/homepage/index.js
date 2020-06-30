@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import UnauthorizedPage from '../unauthorizedpage'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar, Typography, } from '@material-ui/core'
+import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar, Typography, Tooltip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MuiAlert from '@material-ui/lab/Alert';
 import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, addPostAction } from './action'
@@ -135,7 +135,7 @@ const HomePage = (props) => {
                     <Grid className={classes.bottomNav} item lg={12} xs={12} md={12} sm={12}>
                         <BottomNavigation
                             className={classes.root}>
-                            <BottomNavigationAction style={{ paddingTop: 10 }} icon={<AddIcon onClick={handleAddModal} className={classes.addPostIcon} />} />
+                            <BottomNavigationAction style={{ paddingTop: 10 }} icon={<Tooltip title="Add a post" placement="top"><AddIcon onClick={handleAddModal} className={classes.addPostIcon} /></Tooltip>} />
                         </BottomNavigation>
                     </Grid>
                 </Grid>

@@ -8,6 +8,7 @@ import WelcomePage from './container/welcomepage'
 import LoginPage from './container/loginpage'
 import HomePage from './container/homepage'
 import ProfilePage from './container/profilepage'
+import EditProfilePage from './container/profilepage/edit-profile-container'
 import NavBar from './container/navpage'
 function App() {
   useEffect(() => {
@@ -21,7 +22,9 @@ function App() {
           <Route exact path="/" component={WelcomePage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/home" component={HomePage} />
+          <Route path="/profile/:id/edit-profile" component={EditProfilePage} />
           <Route path="/profile/:id" component={ProfilePage} />
+
         </Switch>
       </BrowserRouter>
     </Provider>

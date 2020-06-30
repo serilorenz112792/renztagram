@@ -15,6 +15,10 @@ import {
     ADD_POST_SUCCESS,
     ADD_POST_FAILED,
 
+    DELETE_POST,
+    DELETE_POST_SUCCESS,
+    DELETE_POST_FAILED,
+
     ADD_LINEAR_PROGRESS,
     CLEAR_MESSAGE
 
@@ -106,7 +110,27 @@ export const addPostFailedAction = errorInfo => {
     }
 }
 
+export const deletePostAction = postId => {
 
+    return {
+        type: DELETE_POST,
+        payload: postId
+    }
+}
+
+export const deletePostSuccessAction = msg => {
+    return {
+        type: DELETE_POST_SUCCESS,
+        payload: msg
+    }
+}
+
+export const deletePostFailedAction = errorInfo => {
+    return {
+        type: DELETE_POST_FAILED,
+        payload: errorInfo
+    }
+}
 
 export const clearMessageAction = () => {
     return {

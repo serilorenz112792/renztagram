@@ -11,6 +11,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import MuiAlert from '@material-ui/lab/Alert';
 import CommentsContainer from './comments'
 import dotenv from 'dotenv'
+import arrayBufferToBase64 from '../../utils/arrayBufferToBase64'
 dotenv.config()
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
     },
     userInfoTypography: {
         paddingLeft: 10,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        cursor: 'pointer'
     },
     userInfoCardMediaDiv: {
         width: '100%',
@@ -135,18 +137,18 @@ const Post = (props) => {
     //const email = username.email.substring(0)
     //console.log(myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.substring(0, myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.lastIndexOf("@")))
     //console.log("myUsers", myUsers)
-    console.log("myProfile", post)
-
+    //console.log("myProfilePic", myProfilePic[0])
+    //console.log("username", post.comments[0] && post.comments[0].userId)
 
     useEffect(() => {
-        if (process.env.NODE_ENV === 'production') {
-            setProfilePicPath(`https://renztagram.herokuapp.com/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
-            setPostImagePath(`https://renztagram.herokuapp.com/${post && post.imgPath}`)
-        }
-        else {
-            setProfilePicPath(`http://localhost:5999/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
-            setPostImagePath(`http://localhost:5999/${post && post.imgPath}`)
-        }
+        // if (process.env.NODE_ENV === 'production') {
+        //     setProfilePicPath(`https://renztagram.herokuapp.com/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
+        //     setPostImagePath(`https://renztagram.herokuapp.com/${post && post.imgPath}`)
+        // }
+        // else {
+        //     setProfilePicPath(`http://localhost:5999/${myProfilePic[0] && myProfilePic[0].profileImagePath}`)
+        //     setPostImagePath(`http://localhost:5999/${post && post.imgPath}`)
+        // }
 
         if (comment === '') {
             setIsCommentBtnDisable(true)
@@ -175,8 +177,18 @@ const Post = (props) => {
 
 
         //SET BUFFER TO BASE64
+        setProfilePicPath(arrayBufferToBase64(myProfilePic[0] && myProfilePic[0].profileImageFile && myProfilePic[0].profileImageFile.data.data))
         setImageFile(arrayBufferToBase64(post.imgFile && post.imgFile.data.data))
     }, [myProfile, post._id, post.comments && post.comments.comment, props, isCommentBtnDisable, commentContent, commentCreator])
+    const handleGoToProfile = () => {
+        history.push(`/profile/${post && post.createdBy}`)
+    }
+    const handleGoToProfileViaCommentSection = () => {
+        history.push(`/profile/${myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].userId}`)
+    }
+    const handleGotoProfileViaCommentSectionWithAllComments = userId => {
+        history.push(`/profile/${userId}`)
+    }
     const handleCollapse = () => {
         setCollapse(!collapse)
 
@@ -212,12 +224,7 @@ const Post = (props) => {
         //console.log("DATA", data)
         AddComment(data)
     }
-    function arrayBufferToBase64(buffer) {
-        var binary = '';
-        var bytes = [].slice.call(new Uint8Array(buffer));
-        bytes.forEach((b) => binary += String.fromCharCode(b));
-        return window.btoa(binary);
-    }
+
     //console.log("post", post)
     //console.log("postImagePath", postImagePath)
     return (
@@ -233,8 +240,8 @@ const Post = (props) => {
 
                         <Grid container>
                             <Grid className={classes.userInfoGrid} item xs={12}>
-                                <Avatar src={profilePicPath} />
-                                <Typography className={classes.userInfoTypography} variant="subtitle1">{`${username[0] && username[0].firstName} ${username[0] && username[0].lastName}`}</Typography>
+                                <Avatar onClick={handleGoToProfile} style={{ cursor: 'pointer' }} src={`data:image/jpeg;base64,${profilePicPath}`} />
+                                <Typography onClick={handleGoToProfile} className={classes.userInfoTypography} variant="subtitle1">{`${username[0] && username[0].firstName} ${username[0] && username[0].lastName}`}</Typography>
                             </Grid>
                             <Grid item xs={12}>
                                 <Paper>
@@ -258,7 +265,7 @@ const Post = (props) => {
                             </Grid>
                             <Grid className={classes.captionGrid} item xs={12}>
                                 <Typography variant="body1">
-                                    <span className={classes.captionCreator}>{username[0] && username[0].email.substring(0, username[0] && username[0].email.lastIndexOf("@"))} </span>
+                                    <span onClick={handleGoToProfile} className={classes.captionCreator}>{username[0] && username[0].email.substring(0, username[0] && username[0].email.lastIndexOf("@"))} </span>
                                     <span className={classes.captionContent}>{post.title}</span>
                                 </Typography>
                             </Grid>
@@ -270,11 +277,11 @@ const Post = (props) => {
                             <Grid className={classes.commentSectionGrid} item xs={12}>
                                 {myComments[0] && myComments[0].comments && myComments[0].comments.length > 0 ? <Typography onClick={handleCollapse} variant="body1" className={classes.viewCommentsBtn}>{!collapse ? `View all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments` : `Hide all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments`}</Typography> : null}
                                 {!collapse ?
-                                    <Typography variant="body1"><span className={classes.commentCreator}>{commentCreator}</span> <span className={classes.commentContent}>{commentContent}</span></Typography>
+                                    <Typography variant="body1"><span className={classes.commentCreator} onClick={handleGoToProfileViaCommentSection}>{commentCreator}</span> <span className={classes.commentContent}>{commentContent}</span></Typography>
                                     :
                                     <Collapse in={collapse} timeout="auto" unmountOnExit>
                                         <Paper className={classes.allCommentsPaper}>
-                                            {myComments[0] && myComments[0].comments.map((comments, index) => <CommentsContainer key={comments.commentId} comments={comments} />)}
+                                            {myComments[0] && myComments[0].comments.map((comments, index) => <CommentsContainer handleGotoProfileViaCommentSectionWithAllComments={handleGotoProfileViaCommentSectionWithAllComments} key={comments.commentId} comments={comments} />)}
                                         </Paper>
                                     </Collapse>}
 

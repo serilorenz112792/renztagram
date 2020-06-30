@@ -120,7 +120,7 @@ const LoginPage = (props) => {
 
         setOpenSnack(false);
     }
-    const handleLogin = () => {
+    const handleLogin = (e) => {
         const data = {
             email,
             password
@@ -149,66 +149,73 @@ const LoginPage = (props) => {
                         {msg}
                     </Alert>
                 </Snackbar>
-                <Grid container className={classes.gridContainer}>
-                    <Grid className={classes.gridImage} item xs={12}>
-                        <img className={classes.image} src={Logo} alt="App Logo" />
-                    </Grid>
-                    <Grid className={classes.gridEmail} item xs={12}>
-                        <TextField
-                            className={classes.textField}
-                            fullWidth
-                            type="text"
-                            placeholder="Enter email"
-                            label="Email"
-                            autoFocus
-                            onChange={(e) => setEmail(e.target.value)}
-                            onFocus={handleFocus}
-                            error={error}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            className={classes.textField}
-                            fullWidth
-                            placeholder="Enter password"
-                            label="Password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            onFocus={handleFocus}
-                            error={error}
-                            type={isVisible ? "text" : "password"}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position='end'>
-                                        <IconButton
-                                            aria-label='toggle password visibility'
-                                            onClick={handlePasswordVisibility}
-                                        >
-                                            {isVisible ? <VisibilityIcon className={classes.visiblilityIcons} /> : <VisibilityOffIcon className={classes.visiblilityIcons} />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </Grid>
-                    <Grid className={classes.gridLoginbtn} item xs={12}>
-                        {auth.isLoading ? <CircularProgress /> : <Button
-                            className={classes.loginBtn}
-                            variant="contained"
+                <form onSubmit={handleLogin}>
+                    <Grid container className={classes.gridContainer}>
+                        <Grid className={classes.gridImage} item xs={12}>
+                            <img className={classes.image} src={Logo} alt="App Logo" />
+                        </Grid>
+                        <Grid className={classes.gridEmail} item xs={12}>
+                            <TextField
+                                className={classes.textField}
+                                fullWidth
+                                type="text"
+                                placeholder="Enter email"
+                                label="Email"
+                                autoFocus
+                                onChange={(e) => setEmail(e.target.value)}
+                                onFocus={handleFocus}
+                                error={error}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                className={classes.textField}
+                                fullWidth
+                                placeholder="Enter password"
+                                label="Password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                onFocus={handleFocus}
+                                error={error}
+                                type={isVisible ? "text" : "password"}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position='end'>
+                                            <IconButton
+                                                aria-label='toggle password visibility'
+                                                onClick={handlePasswordVisibility}
+                                            >
+                                                {isVisible ? <VisibilityIcon className={classes.visiblilityIcons} /> : <VisibilityOffIcon className={classes.visiblilityIcons} />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </Grid>
+                        <Grid className={classes.gridLoginbtn} item xs={12}>
+                            {auth.isLoading ? <CircularProgress /> :
 
-                            fullWidth
-                            onClick={handleLogin}
-                        >Login
-                    </Button>}
-                    </Grid>
-                    <Grid className={classes.gridSignup} item xs={12}>
-                        <Typography variant="body1">
-                            Don't have an account? <span
-                                onClick={handleRegisterModal}
-                                className={classes.signUpbtn}>Sign up!</span>
-                        </Typography>
-                    </Grid>
-                </Grid>
+                                <Button
+                                    className={classes.loginBtn}
+                                    variant="contained"
+                                    type="submit"
+                                    fullWidth
+                                    onClick={handleLogin}
+                                //onSubmit={handleLogin}
+                                >Login
+                                </Button>
 
+
+                            }
+                        </Grid>
+                        <Grid className={classes.gridSignup} item xs={12}>
+                            <Typography variant="body1">
+                                Don't have an account? <span
+                                    onClick={handleRegisterModal}
+                                    className={classes.signUpbtn}>Sign up!</span>
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </form>
             </div>
         </Container>
     )

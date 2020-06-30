@@ -2,14 +2,14 @@ const express = require('express')
 const Post = require('../model/post')
 const User = require('../model/user')
 const router = express.Router()
-var fs = require('fs')
+const fs = require('fs')
 
 const authentication = require('../middleware/authentication')
 
 const upload = require('../middleware/multer')
 
 
-router.get('/fetch-post', async (req, res) => {
+router.get('/fetch-post', authentication, async (req, res) => {
 
 
 
@@ -25,7 +25,7 @@ router.get('/fetch-post', async (req, res) => {
 })
 
 
-router.get('/fetch-comment/', async (req, res) => {
+router.get('/fetch-comment/', authentication, async (req, res) => {
     await Post.find()
         .then((posts) => {
             res.status(200).json(posts)

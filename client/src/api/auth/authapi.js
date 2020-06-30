@@ -16,7 +16,6 @@ export const tokenConfig = (getState) => {
     return config
 }
 export async function loadUserApi(auth) {
-    console.log("auth", auth)
     return await axios.get('/api/auth', tokenConfig(auth))
 }
 

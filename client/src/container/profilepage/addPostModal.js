@@ -99,11 +99,13 @@ const AddPostModal = props => {
     }
     const handleChange = (event) => {
         //setData(event.target.files)
+
+
         const file = event.target.files[0]
+        const reader = new FileReader();
         if (file === undefined) {
             setPostBtnDisable(true)
         }
-        const reader = new FileReader();
         setImgData(file)
 
 

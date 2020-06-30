@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const schema = mongoose.Schema
 
 const UserProfileSchema = schema({
-    friends: [Object],
+    followers: [Object],
+    following: [Object],
     userId: String,
     profileImageFile: {
         data: Buffer,
@@ -11,7 +12,11 @@ const UserProfileSchema = schema({
     },
     profileImagePath: String,
     age: Number,
-    birthday: Date
+    birthday: String,
+    gender: String,
+    motto: String,
+    isPrivate: Boolean,
+
 })
 
 
