@@ -29,10 +29,12 @@ const useStyles = makeStyles((theme) => ({
         cursor: 'pointer'
     },
     even: {
-        backgroundColor: 'lightgray'
+        backgroundColor: 'lightgray',
+        "&:hover": { backgroundColor: '#f719e9' }
     },
     odd: {
-        backgroundColor: '#FFF'
+        backgroundColor: '#FFF',
+        "&:hover": { backgroundColor: '#f719e9' }
     }
 }))
 const FollowingPage = props => {

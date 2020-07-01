@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import UnauthorizedPage from '../unauthorizedpage'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar, Typography, Tooltip } from '@material-ui/core'
+import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar, Typography, Tooltip, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MuiAlert from '@material-ui/lab/Alert';
 import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, addPostAction, deleteCommentAction } from './action'
@@ -11,7 +11,8 @@ import AddIcon from '@material-ui/icons/Add';
 import { bindActionCreators } from 'redux'
 import Post from './post'
 import AddPostModal from './addPostModal'
-import { set } from 'mongoose'
+import ClockComponent from './clock'
+import Suggestions from './suggestions'
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -20,6 +21,13 @@ const useStyles = makeStyles((theme) => ({
     root2: {
         paddingTop: 50,
         //position: 'relative'
+    },
+    suggestedTypo: {
+
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+
     },
     gridSuggested: {
 
@@ -81,7 +89,6 @@ const HomePage = (props) => {
         AddComment, AddPost, DeleteComment,
         AddLinearProgress, ClearMsg, history } = props
     const [modalState, setModalState] = useState(false)
-
     // const [openSnack, setOpenSnack] = useState(false)
     // const [severity, setSeverity] = useState(false)
     // const [addPostMsg, setAddPostMsg] = useState('')
@@ -106,7 +113,6 @@ const HomePage = (props) => {
     const handleAddModal = () => {
         setModalState(!modalState)
     }
-    //console.log("modalState", modalState)
     return (
         <Container className={classes.root2}>
             {auth.isAuthenticated
@@ -129,9 +135,19 @@ const HomePage = (props) => {
                         }
                     </Grid>
                     <Grid className={classes.gridSuggested} item lg={4} md={4}>
-                        <div style={{ backgroundColor: 'red', height: 100 }}>
+                        <Grid style={{ paddingTop: 20 }} item xs={12} container justify="center">
+                            <ClockComponent />
 
-                        </div>
+                        </Grid>
+
+                        <Grid style={{ paddingTop: 20 }} item xs={12} container justify="center">
+                            <Typography className={classes.suggestedTypo} variant="body 1">
+                                Suggested Friends
+                            </Typography>
+                            <Grid style={{ paddingTop: 20 }} container justify="center">
+                                <Suggestions history={history} auth={auth} profile={profile} />
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Grid className={classes.bottomNav} item lg={12} xs={12} md={12} sm={12}>
                         <BottomNavigation

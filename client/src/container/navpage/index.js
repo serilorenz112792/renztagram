@@ -181,7 +181,17 @@ const NavBar = (props) => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}><NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/profile/${auth.user && auth.user._id}`}>Profile</NavLink></MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+                {window.location.pathname.includes('/profile') ?
+                    <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/home`}>
+                        Home
+                    </NavLink>
+                    :
+                    <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/profile/${auth.user && auth.user._id}`}>
+                        Profile
+                </NavLink>
+                }
+            </MenuItem>
         </Menu>
     );
     const loginMenuId = 'primary-account-menu'
@@ -228,7 +238,7 @@ const NavBar = (props) => {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
+            {/* <MenuItem>
                 <IconButton aria-label="show 4 new mails" color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <MailIcon />
@@ -243,7 +253,7 @@ const NavBar = (props) => {
                     </Badge>
                 </IconButton>
                 <p>Notifications</p>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={handleMobileMenuClose}>
                 <IconButton
                     aria-label="account of current user"
@@ -397,7 +407,7 @@ const NavBar = (props) => {
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {auth.isAuthenticated ? <div>
-                            <IconButton aria-label="show 4 new mails" color="inherit">
+                            {/* <IconButton aria-label="show 4 new mails" color="inherit">
                                 <Badge badgeContent={4} color="secondary">
                                     <MailIcon />
                                 </Badge>
@@ -406,7 +416,7 @@ const NavBar = (props) => {
                                 <Badge badgeContent={17} color="secondary">
                                     <NotificationsIcon />
                                 </Badge>
-                            </IconButton>
+                            </IconButton> */}
                         </div>
                             : null
                         }
