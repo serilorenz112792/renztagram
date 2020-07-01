@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar, Typography, Tooltip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MuiAlert from '@material-ui/lab/Alert';
-import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, addPostAction } from './action'
+import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, addPostAction, deleteCommentAction } from './action'
 import { fetchUserProfileAction, fetchUsersAction } from '../profilepage/action'
 import AddIcon from '@material-ui/icons/Add';
 import { bindActionCreators } from 'redux'
@@ -78,7 +78,8 @@ const HomePage = (props) => {
     const classes = useStyles()
     const { auth, home, profile, FetchPost,
         FetchComment, FetchUserProfiles, FetchUsers,
-        AddComment, AddPost, AddLinearProgress, ClearMsg, history } = props
+        AddComment, AddPost, DeleteComment,
+        AddLinearProgress, ClearMsg, history } = props
     const [modalState, setModalState] = useState(false)
 
     // const [openSnack, setOpenSnack] = useState(false)
@@ -123,7 +124,7 @@ const HomePage = (props) => {
                             home.isLoading ? <Grid style={{ height: 450 }}><div className={classes.circularLoading} ><CircularProgress color="secondary" /></div></Grid> :
                                 home && home.posts.map((post, ind) =>
 
-                                    <Post index={ind} FetchComment={FetchComment} ClearMsg={ClearMsg} AddComment={AddComment} history={history} home={home} auth={auth} profile={profile} key={post._id} post={post} />
+                                    <Post index={ind} DeleteComment={DeleteComment} FetchComment={FetchComment} ClearMsg={ClearMsg} AddComment={AddComment} history={history} home={home} auth={auth} profile={profile} key={post._id} post={post} />
                                 )
                         }
                     </Grid>
@@ -153,6 +154,7 @@ HomePage.propTypes = {
     FetchUsers: PropTypes.func.isRequired,
     AddComment: PropTypes.func.isRequired,
     AddPost: PropTypes.func.isRequired,
+    DeleteComment: PropTypes.func.isRequired,
     ClearMsg: PropTypes.func.isRequired
 }
 const mapStateToProps = state => ({
@@ -168,6 +170,7 @@ const mapDispatchToProps = dispatch => ({
         FetchUsers: fetchUsersAction,
         AddComment: addCommentAction,
         AddPost: addPostAction,
+        DeleteComment: deleteCommentAction,
         ClearMsg: clearMessageAction
     }, dispatch)
 })

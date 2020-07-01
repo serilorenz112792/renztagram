@@ -19,6 +19,10 @@ import {
     DELETE_POST_SUCCESS,
     DELETE_POST_FAILED,
 
+    DELETE_COMMENT,
+    DELETE_COMMENT_SUCCESS,
+    DELETE_COMMENT_FAILED,
+
     ADD_LINEAR_PROGRESS,
     CLEAR_MESSAGE
 
@@ -128,6 +132,27 @@ export const deletePostSuccessAction = msg => {
 export const deletePostFailedAction = errorInfo => {
     return {
         type: DELETE_POST_FAILED,
+        payload: errorInfo
+    }
+}
+
+export const deleteCommentAction = data => {
+    return {
+        type: DELETE_COMMENT,
+        payload: data
+    }
+}
+
+export const deleteCommentSuccessAction = msg => {
+    return {
+        type: DELETE_COMMENT_SUCCESS,
+        payload: msg
+    }
+}
+
+export const deleteCommentFailedAction = errorInfo => {
+    return {
+        type: DELETE_COMMENT_FAILED,
         payload: errorInfo
     }
 }

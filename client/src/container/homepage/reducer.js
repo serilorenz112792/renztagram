@@ -11,6 +11,9 @@ import {
     DELETE_POST,
     DELETE_POST_SUCCESS,
     DELETE_POST_FAILED,
+    DELETE_COMMENT,
+    DELETE_COMMENT_SUCCESS,
+    DELETE_COMMENT_FAILED,
     CLEAR_MESSAGE,
     ADD_LINEAR_PROGRESS,
     FETCH_COMMENT_SUCCESS
@@ -27,6 +30,8 @@ const initialState = {
     addPostMsg: '',
     isAddPostLoading: false,
     isDeletePostLoading: false,
+    isDeleteCommentLoading: false,
+    deleteCommentMsg: '',
     error: {}
 }
 
@@ -108,11 +113,31 @@ const homeReducer = (state = initialState, action) => {
                 msg: payload.msg,
                 error: payload.error
             }
+        case DELETE_COMMENT:
+            return {
+                ...state,
+                isDeleteCommentLoading: true
+
+            }
+        case DELETE_COMMENT_SUCCESS:
+            return {
+                ...state,
+                isDeleteCommentLoading: false,
+                deleteCommentMsg: payload.msg
+            }
+        case DELETE_COMMENT_FAILED:
+            return {
+                ...state,
+                isDeleteCommentLoading: false,
+                deleteCommentMsg: payload.msg,
+                error: payload.error
+            }
         case CLEAR_MESSAGE:
             return {
                 ...state,
                 msg: '',
-                addPostMsg: ''
+                addPostMsg: '',
+                deleteCommentMsg: ''
             }
 
         default:

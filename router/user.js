@@ -175,6 +175,14 @@ router.post('/add-comment', authentication, async (req, res) => {
 })
 
 
+router.put('/delete-comment/:id', async (req, res) => {
+    const { userId, commentId } = req.body
+    const post = await Post.findOne({ createdBy: userId, _id: req.params.id })
+    await post.updateOne({ $pull: { comments: { commentId: commentId } } })
+        .then(() => { res.status(200).json({ msg: 'Comment deleted!' }) })
+        .catch(err => { res.status(400).json({ msg: 'Failed to delete comment!', error: err }) })
+})
+
 router.put('/change-password/:id', authentication, async (req, res) => {
     const { password, newPassword, confirmNewPassword } = req.body
     if (password === '' || newPassword === '' || confirmNewPassword === '') return res.status(400).json({ msg: 'All fields are required!' })

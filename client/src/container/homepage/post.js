@@ -4,10 +4,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import {
     Paper, Card, Grid, CardMedia, CardContent, CardActionArea,
     IconButton, InputAdornment, TextField, Avatar, Divider, Typography, Button,
-    Collapse, CircularProgress, Snackbar,
+    Collapse, CircularProgress, Snackbar, Tooltip
 } from '@material-ui/core'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import CommentIcon from '@material-ui/icons/Comment';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
+import DeleteIcon from '@material-ui/icons/Delete';
 import MuiAlert from '@material-ui/lab/Alert';
 import CommentsContainer from './comments'
 import dotenv from 'dotenv'
@@ -107,7 +109,7 @@ function Alert(props) {
 
 const Post = (props) => {
     const classes = useStyles()
-    const { post, profile, auth, home, index, history, AddComment, ClearMsg } = props
+    const { post, profile, auth, home, index, history, AddComment, DeleteComment, ClearMsg } = props
     const [profilePicPath, setProfilePicPath] = useState('')
     const [postImagePath, setPostImagePath] = useState('')
     const [imageFile, setImageFile] = useState('')
@@ -126,7 +128,7 @@ const Post = (props) => {
     const [commentCreator, setCommentCreator] = useState('')
     const [commentContent, setCommentContent] = useState('')
 
-    //const userId = auth.user && auth.user._id
+    const userId = auth.user && auth.user._id
     const myUsers = profile.users && profile.users
     const myProfile = profile.userProfiles && profile.userProfiles.filter(userProfile => myUsers.some(user => userProfile.userId === user._id))
     const myProfilePic = myProfile.filter(userProfile => userProfile.userId === post.createdBy && post.createdBy)
@@ -153,6 +155,12 @@ const Post = (props) => {
         if (comment === '') {
             setIsCommentBtnDisable(true)
 
+        }
+        if (home.deleteCommentMsg && home.deleteCommentMsg === "Comment deleted!") {
+            setSeverity('success')
+            setOpenSnack(true)
+            setMsg(home.deleteCommentMsg && home.deleteCommentMsg)
+            ClearMsg()
         }
         if (home.msg && home.msg.msg === "Comment added!") {
             setSeverity('success')
@@ -225,6 +233,16 @@ const Post = (props) => {
         AddComment(data)
     }
 
+    const handleDeleteLastComment = () => {
+        const data = {
+            postId: post._id,
+            userId: post.createdBy,
+            commentId: myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].commentId
+        }
+        DeleteComment(data)
+    }
+
+
     //console.log("post", post)
     //console.log("postImagePath", postImagePath)
     return (
@@ -277,11 +295,11 @@ const Post = (props) => {
                             <Grid className={classes.commentSectionGrid} item xs={12}>
                                 {myComments[0] && myComments[0].comments && myComments[0].comments.length > 0 ? <Typography onClick={handleCollapse} variant="body1" className={classes.viewCommentsBtn}>{!collapse ? `View all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments` : `Hide all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments`}</Typography> : null}
                                 {!collapse ?
-                                    <Typography variant="body1"><span className={classes.commentCreator} onClick={handleGoToProfileViaCommentSection}>{commentCreator}</span> <span className={classes.commentContent}>{commentContent}</span></Typography>
+                                    <Typography variant="body1"  ><span className={classes.commentCreator} onClick={handleGoToProfileViaCommentSection}>{commentCreator}</span> <span className={classes.commentContent}>{commentContent}</span>{myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].userId === userId ? <div style={{ float: 'right' }}>{home.isDeleteCommentLoading ? <CircularProgress color="secondary" /> : <Tooltip title="Delete this comment?" placement="bottom-start"><DeleteIcon onClick={handleDeleteLastComment} style={{ cursor: 'pointer', color: '#ad0ea3' }} /></Tooltip>}</div> : null}</Typography>
                                     :
                                     <Collapse in={collapse} timeout="auto" unmountOnExit>
                                         <Paper className={classes.allCommentsPaper}>
-                                            {myComments[0] && myComments[0].comments.map((comments, index) => <CommentsContainer handleGotoProfileViaCommentSectionWithAllComments={handleGotoProfileViaCommentSectionWithAllComments} key={comments.commentId} comments={comments} />)}
+                                            {myComments[0] && myComments[0].comments.map((comments, index) => <CommentsContainer isDeleteCommentLoading={home.isDeleteCommentLoading} auth={auth} postId={post._id} userId={post.createdBy} DeleteComment={DeleteComment} handleGotoProfileViaCommentSectionWithAllComments={handleGotoProfileViaCommentSectionWithAllComments} key={comments.commentId} comments={comments} />)}
                                         </Paper>
                                     </Collapse>}
 

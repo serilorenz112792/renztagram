@@ -29,3 +29,10 @@ export async function deletePostApi({ postId, auth }) {
     return await axios.delete(`/api/post/delete-post/${postId}`, tokenConfig(auth))
 }
 
+
+
+export async function deleteCommentApi({ postId, userId, commentId, auth }) {
+    const body = JSON.stringify({ userId, commentId })
+    return await axios.put(`/api/user/delete-comment/${postId}`, body, tokenConfig(auth))
+}
+

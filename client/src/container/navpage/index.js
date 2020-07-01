@@ -353,7 +353,7 @@ const NavBar = (props) => {
                                             <Grid style={{ "&:hover": { backgroundColor: 'lightgray' } }} container>
                                                 <Grid item xs={8}>
                                                     <Typography style={{ textAlign: 'center', paddingTop: 10, fontWeight: 'bold' }} variant="body1">
-                                                        <NavLink to={`/profile/${option.userId}`}>{option.fullName}</NavLink>
+                                                        <NavLink style={{ textDecoration: 'none', color: '#ad0ea3' }} to={`/profile/${option.userId}`}>{option.fullName}</NavLink>
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={4}>

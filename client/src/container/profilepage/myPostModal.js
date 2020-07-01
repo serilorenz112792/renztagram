@@ -8,7 +8,7 @@ import NavigateNextSharpIcon from '@material-ui/icons/NavigateNextSharp';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import CommentIcon from '@material-ui/icons/Comment';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-
+import DeleteIcon from '@material-ui/icons/Delete';
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles'
 import arrayBufferToBase64 from '../../utils/arrayBufferToBase64'
@@ -192,7 +192,7 @@ const useStyles = makeStyles((theme) => ({
 const MyPostModal = (props) => {
     const classes = useStyles()
     const { history, state, handleClose, home, userId,
-        handleNextAndPrevSetIndex, auth, profile, index, FetchComments, AddComment, DeletePost, ClearMessage } = props
+        handleNextAndPrevSetIndex, auth, profile, index, FetchComments, AddComment, DeletePost, DeleteComment, ClearMessage } = props
     const [modalState, setModalState] = useState(false)
 
     const [deleteModalState, setDeleteModalState] = useState(false)
@@ -235,6 +235,12 @@ const MyPostModal = (props) => {
             setIsCommentActive(false)
             ClearMessage()
         }
+        if (home.deleteCommentMsg && home.deleteCommentMsg === "Comment deleted!") {
+            setSeverity('success')
+            setOpenSnack(true)
+            setMsg(home.deleteCommentMsg && home.deleteCommentMsg)
+            ClearMessage()
+        }
     }, [props])
     const handleCollapse = () => {
         setCollapse(!collapse)
@@ -275,6 +281,16 @@ const MyPostModal = (props) => {
         }
         //console.log("DATA", data)
         AddComment(data)
+        handleNextAndPrevSetIndex(indx)
+    }
+    const handleDeleteComment = () => {
+        const data = {
+            postId: myPosts[indx] && myPosts[indx]._id,
+            userId: myPosts[indx] && myPosts[indx].createdBy,
+            commentId: myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].commentId
+        }
+
+        DeleteComment(data)
         handleNextAndPrevSetIndex(indx)
     }
     const handleNext = () => {
@@ -337,6 +353,7 @@ const MyPostModal = (props) => {
             history.push(`/profile/${userIdentifier}`)
         }
     }
+
     return (
         <Dialog style={{ backgroundColor: 'black' }} disableEscapeKeyDown disableBackdropClick open={modalState} onClose={handleCloseModal}>
             <DeleteModalConfirmation DeletePost={DeletePost} indx={indx} closeParentModal={handleCloseModal} myPostsId={myPostsId} deleteModalState={deleteModalState} handleCloseDeleteModal={handleCloseDeleteModal} />
@@ -384,11 +401,11 @@ const MyPostModal = (props) => {
                         {myComments[0] && myComments[0].comments && myComments[0].comments.length > 0 ? <Typography onClick={handleCollapse} variant="body1" className={classes.viewCommentsBtn}>{!collapse ? `View all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments` : `Hide all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments`}</Typography> : null}
                         {!collapse ?
                             <Typography variant="body1"><span className={classes.commentCreator} onClick={handleGoToProfileViaCommentSection}>{myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.substring(0, myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.lastIndexOf("@"))}</span>
-                                <span className={classes.commentContent}>{myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].comment}</span></Typography>
+                                <span className={classes.commentContent}>{myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].comment}</span><div style={{ float: 'right' }}>{myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].userId === userIdThruAuth ? <Tooltip title="Delete this comment?" placement="right-start">{home.isDeleteCommentLoading ? <CircularProgress color="secondary" /> : <DeleteIcon onClick={handleDeleteComment} style={{ color: '#ad0ea3', cursor: 'pointer' }} />}</Tooltip> : null}</div></Typography>
                             :
                             <Collapse in={collapse} timeout="auto" unmountOnExit>
                                 <Paper className={classes.allCommentsPaper}>
-                                    {myComments[0] && myComments[0].comments.map((comments, index) => <CommentsContainer userIdThruAuth={userIdThruAuth} userId={userId} handleGotoProfileViaCommentSectionWithAllComments={handleGotoProfileViaCommentSectionWithAllComments} key={comments.commentId} comments={comments} />)}
+                                    {myComments[0] && myComments[0].comments.map((comments, index) => <CommentsContainer handleNextAndPrevSetIndex={handleNextAndPrevSetIndex} index={indx} DeleteComment={DeleteComment} postId={myPosts[indx] && myPosts[indx]._id} createdBy={myPosts[indx] && myPosts[indx].createdBy} userIdThruAuth={userIdThruAuth} userId={userId} isDeleteCommentLoading={home.isDeleteCommentLoading} handleGotoProfileViaCommentSectionWithAllComments={handleGotoProfileViaCommentSectionWithAllComments} key={comments.commentId} comments={comments} />)}
                                 </Paper>
                             </Collapse>}
 
