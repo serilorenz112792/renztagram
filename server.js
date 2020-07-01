@@ -9,7 +9,7 @@ app.use(express.urlencoded({ limit: '50mb' }));
 
 let DB = process.env.MONGO_URI
 let DB2 = process.env.LOCAL_MONGO_URI
-mongoose.connect(DB2, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, () => {
+mongoose.connect(DB, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, () => {
     try {
         console.log("connected on mongo")
     }
