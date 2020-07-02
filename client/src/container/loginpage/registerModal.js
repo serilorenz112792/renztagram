@@ -85,7 +85,7 @@ const RegisterModal = (props) => {
         const data = {
             firstName,
             lastName,
-            email,
+            email: email.toLowerCase(),
             password
         }
         Register(data)

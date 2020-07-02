@@ -96,7 +96,8 @@ const useStyles = makeStyles((theme) => ({
         cursor: 'pointer'
     },
     commentContent: {
-        paddingLeft: 10
+        paddingLeft: 10,
+        wordBreak: 'break-word'
     },
     allCommentsPaper: {
         width: 'inherit',
@@ -295,7 +296,15 @@ const Post = (props) => {
                             <Grid className={classes.commentSectionGrid} item xs={12}>
                                 {myComments[0] && myComments[0].comments && myComments[0].comments.length > 0 ? <Typography onClick={handleCollapse} variant="body1" className={classes.viewCommentsBtn}>{!collapse ? `View all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments` : `Hide all ${myComments[0] && myComments[0].comments && myComments[0].comments.length} comments`}</Typography> : null}
                                 {!collapse ?
-                                    <Typography variant="body1"  ><span className={classes.commentCreator} onClick={handleGoToProfileViaCommentSection}>{commentCreator}</span> <span className={classes.commentContent}>{commentContent}</span>{myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].userId === userId ? <div style={{ float: 'right' }}>{home.isDeleteCommentLoading ? <CircularProgress color="secondary" /> : <Tooltip title="Delete this comment?" placement="bottom-start"><DeleteIcon onClick={handleDeleteLastComment} style={{ cursor: 'pointer', color: '#ad0ea3' }} /></Tooltip>}</div> : null}</Typography>
+                                    <Grid container>
+                                        <Grid style={{ width: '100%' }} item xs={11}>
+                                            <Typography style={{ width: 'inherit' }} variant="body1"  ><span className={classes.commentCreator} onClick={handleGoToProfileViaCommentSection}>{commentCreator}</span>
+                                                <span className={classes.commentContent}>{commentContent}</span></Typography>
+                                        </Grid>
+                                        <Grid container justify="center" item xs={1}>
+                                            {myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].userId === userId ? <div style={{ float: 'right' }}>{home.isDeleteCommentLoading ? <CircularProgress color="secondary" /> : <Tooltip title="Delete this comment?" placement="bottom-start"><DeleteIcon onClick={handleDeleteLastComment} style={{ cursor: 'pointer', color: '#ad0ea3' }} /></Tooltip>}</div> : null}
+                                        </Grid>
+                                    </Grid>
                                     :
                                     <Collapse in={collapse} timeout="auto" unmountOnExit>
                                         <Paper className={classes.allCommentsPaper}>

@@ -272,7 +272,7 @@ const NavBar = (props) => {
                     aria-haspopup="true"
                     color="inherit"
                 >
-                    {auth.isAuthenticated ? <Avatar src={`data: image / jpeg; base64, ${arrayBufferToBase64(userInfo[0] && userInfo[0].profileImageFile && userInfo[0].profileImageFile.data.data)} `} /> : <AccountCircle />}
+                    {auth.isAuthenticated ? <Avatar src={`data:image/jpeg;base64,${arrayBufferToBase64(userInfo[0] && userInfo[0].profileImageFile && userInfo[0].profileImageFile.data.data)}`} /> : <AccountCircle />}
                 </IconButton>
                 <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/profile/${auth.user && auth.user._id}`}>Profile</NavLink>
             </MenuItem>

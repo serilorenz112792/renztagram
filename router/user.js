@@ -14,10 +14,11 @@ router.post('/register', async (req, res) => {
     if (password.length < 8) return res.status(400).json({ msg: 'Password must be greated than or equal to 8 characters!' })
     const user = await User.findOne({ email: email })
     if (user) return res.status(400).json({ msg: 'Email is not available!' })
+
     const newUser = User({
         firstName,
         lastName,
-        email,
+        email: email.toLowerCase(),
         password
     })
     let newUserProfile = UserProfile({

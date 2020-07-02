@@ -122,7 +122,7 @@ const LoginPage = (props) => {
     }
     const handleLogin = (e) => {
         const data = {
-            email,
+            email: email.toLowerCase(),
             password
         }
         Login(data)
