@@ -1,12 +1,14 @@
 const express = require('express')
 const Post = require('../model/post')
 const User = require('../model/user')
+const UserProfile = require('../model/user-profile')
 const router = express.Router()
 const fs = require('fs')
-
+const mongoose = require('mongoose')
 const authentication = require('../middleware/authentication')
 
 const upload = require('../middleware/multer')
+const userProfile = require('../model/user-profile')
 
 
 router.get('/fetch-post', authentication, async (req, res) => {
@@ -132,6 +134,31 @@ router.delete('/delete-post/:id', authentication, (req, res) => {
         .catch(err => {
             res.status(400).json({ msg: 'Failed to delete post!', error: err })
         })
+})
+
+
+router.put('/like-post/:id', authentication, async (req, res) => {
+    const { userId } = req.body
+    const user = await User.findOne({ _id: userId }).select("-password")
+    const post = await Post.findOne({ _id: req.params.id })
+
+    await post.likedBy.push(user)
+
+    await UserProfile.findOne({ userId }).then((userP) => {
+        userP.likedPost.push(post)
+        userP.save()
+        post.save().then(() => res.status(200).json({ msg: 'You liked this post!' })).catch(err => res.status(400).json({ error: err }))
+    })
+})
+
+router.put('/unlike-post/:id', authentication, async (req, res) => {
+    const { userId } = req.body
+    console.log("req.params.id", req.params.id)
+    await UserProfile.update({ userId: userId }, { $pull: { likedPost: { _id: mongoose.Types.ObjectId(req.params.id) } } })
+        .then(() => console.log("updated"))
+    await Post.update({ _id: req.params.id }, { $pull: { likedBy: { _id: mongoose.Types.ObjectId(userId) } } })
+        .then(() => res.status(200).json({ msg: 'You unliked this post!' }))
+        .catch(err => res.status(400).json({ error: err }))
 })
 
 module.exports = router

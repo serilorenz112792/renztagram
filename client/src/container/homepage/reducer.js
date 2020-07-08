@@ -14,6 +14,10 @@ import {
     DELETE_COMMENT,
     DELETE_COMMENT_SUCCESS,
     DELETE_COMMENT_FAILED,
+    LIKE_POST_SUCCESS,
+    LIKE_POST_FAILED,
+    UNLIKE_POST_SUCCESS,
+    UNLIKE_POST_FAILED,
     CLEAR_MESSAGE,
     ADD_LINEAR_PROGRESS,
     FETCH_COMMENT_SUCCESS
@@ -28,6 +32,8 @@ const initialState = {
     comments: [],
     msg: '',
     addPostMsg: '',
+    likePostMsg: '',
+    unlikePostMsg: '',
     isAddPostLoading: false,
     isDeletePostLoading: false,
     isDeleteCommentLoading: false,
@@ -130,6 +136,26 @@ const homeReducer = (state = initialState, action) => {
                 ...state,
                 isDeleteCommentLoading: false,
                 deleteCommentMsg: payload.msg,
+                error: payload.error
+            }
+        case LIKE_POST_SUCCESS:
+            return {
+                ...state,
+                likePostMsg: payload.msg
+            }
+        case LIKE_POST_FAILED:
+            return {
+                ...state,
+                error: payload.error
+            }
+        case UNLIKE_POST_SUCCESS:
+            return {
+                ...state,
+                unlikePostMsg: payload.msg
+            }
+        case UNLIKE_POST_FAILED:
+            return {
+                ...state,
                 error: payload.error
             }
         case CLEAR_MESSAGE:

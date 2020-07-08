@@ -23,6 +23,14 @@ import {
     DELETE_COMMENT_SUCCESS,
     DELETE_COMMENT_FAILED,
 
+    LIKE_POST,
+    LIKE_POST_SUCCESS,
+    LIKE_POST_FAILED,
+
+    UNLIKE_POST,
+    UNLIKE_POST_SUCCESS,
+    UNLIKE_POST_FAILED,
+
     ADD_LINEAR_PROGRESS,
     CLEAR_MESSAGE
 
@@ -154,6 +162,46 @@ export const deleteCommentFailedAction = errorInfo => {
     return {
         type: DELETE_COMMENT_FAILED,
         payload: errorInfo
+    }
+}
+
+export const likePostAction = data => {
+    return {
+        type: LIKE_POST,
+        payload: data
+    }
+}
+
+export const likePostSuccessAction = msg => {
+    return {
+        type: LIKE_POST_SUCCESS,
+        payload: msg
+    }
+}
+
+export const likePostFailedAction = error => {
+    return {
+        type: LIKE_POST_FAILED,
+        payload: error
+    }
+}
+
+export const unlikePostAction = data => {
+    return {
+        type: UNLIKE_POST,
+        payload: data
+    }
+}
+
+export const unlikePostSuccessAction = msg => ({
+    type: UNLIKE_POST_SUCCESS,
+    payload: msg
+})
+
+export const unlikePostFailedAction = error => {
+    return {
+        type: UNLIKE_POST_FAILED,
+        payload: error
     }
 }
 

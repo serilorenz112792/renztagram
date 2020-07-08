@@ -1,11 +1,12 @@
 import { takeLatest, put, select, all, call, delay } from 'redux-saga/effects'
-import { fetchPostApi, fetchCommentApi, addCommentApi, addPostApi, deletePostApi, deleteCommentApi } from '../../api/posts/postapi'
-import { FETCH_POST, FETCH_COMMENT, ADD_COMMENT, ADD_POST, DELETE_POST, DELETE_COMMENT } from './constants'
+import { fetchPostApi, fetchCommentApi, addCommentApi, addPostApi, deletePostApi, deleteCommentApi, likePostApi, unlikePostApi } from '../../api/posts/postapi'
+import { FETCH_POST, FETCH_COMMENT, ADD_COMMENT, ADD_POST, DELETE_POST, DELETE_COMMENT, LIKE_POST, UNLIKE_POST } from './constants'
 import {
     fetchPostAction, fetchCommentAction, fetchPostSuccessAction, fetchPostFailedAction, fetchCommentSuccessAction,
     fetchCommentFailedAction, addCommentFailedAction, addCommentSuccessAction, clearMessageAction,
     addPostSuccessAction, addPostFailedAction, deletePostSuccessAction, deletePostFailedAction,
-    deleteCommentSuccessAction, deleteCommentFailedAction
+    deleteCommentSuccessAction, deleteCommentFailedAction, likePostSuccessAction, likePostFailedAction,
+    unlikePostSuccessAction, unlikePostFailedAction
 } from './action'
 
 const authState = state => state.auth
@@ -115,6 +116,36 @@ function* DeleteCommentSaga(action) {
         yield put(deleteCommentFailedAction(err.response.data))
     }
 }
+function* LikePostSaga(action) {
+    const { userId, postId } = action.payload
+    const auth = yield select(authState)
+    const data = { userId, postId, auth }
+    try {
+        const response = yield call(likePostApi, data)
+        if (response.status === 200) {
+            yield put(likePostSuccessAction(response.data))
+            yield put(fetchCommentAction())
+        }
+    }
+    catch (err) {
+        yield put(likePostFailedAction(err.response.data))
+    }
+}
+function* UnlikePostSaga(action) {
+    const { userId, postId } = action.payload
+    const auth = yield select(authState)
+    const data = { userId, postId, auth }
+    try {
+        const response = yield call(unlikePostApi, data)
+        if (response.status === 200) {
+            yield put(unlikePostSuccessAction(response.data))
+            yield put(fetchCommentAction())
+        }
+    }
+    catch (err) {
+        yield put(unlikePostFailedAction(err.response.data))
+    }
+}
 export default function* HomeSaga() {
     yield all([
         takeLatest(FETCH_POST, FetchPostSaga),
@@ -122,6 +153,8 @@ export default function* HomeSaga() {
         takeLatest(ADD_COMMENT, AddCommentsaga),
         takeLatest(ADD_POST, AddPostSaga),
         takeLatest(DELETE_POST, DeletePostSaga),
-        takeLatest(DELETE_COMMENT, DeleteCommentSaga)
+        takeLatest(DELETE_COMMENT, DeleteCommentSaga),
+        takeLatest(LIKE_POST, LikePostSaga),
+        takeLatest(UNLIKE_POST, UnlikePostSaga)
     ])
 }

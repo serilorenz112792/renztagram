@@ -43,9 +43,11 @@ const FollowersPage = props => {
     const [modalState, setModalState] = useState(false)
     useEffect(() => {
         setModalState(state)
+
+        //return () => setModalState(!modalState)
     }, [props])
     const handleCloseModal = () => {
-        handleClose(!modalState)
+        handleClose(prevState => !prevState)
     }
     const handleGoToProfile = userId => {
         handleClose(false)
@@ -53,29 +55,11 @@ const FollowersPage = props => {
     }
     const userP = userProfile
     const myProfile = profile.userProfiles && profile.userProfiles.filter(userProfile => userP && userP[0] && userP[0].followers.some(user => userProfile.userId === user.userId))
-    //console.log("userProfile sa followers", userProfile && userProfile[0] && userProfile[0].followers.length)
-    //console.log("Profile", myProfile)
-    //const combinedArr = [...userP, ...myProfile]
 
     const followers = userProfile && userProfile[0] && userProfile[0].followers
     const filteredUserP = profile.userProfiles && profile.userProfiles.filter(userP => followers.some(follower => userP.userId === follower.userId))
     const a3 = userProfile && userProfile[0] && userProfile[0].followers.map(t1 => ({ ...t1, ...filteredUserP.find(t2 => t2.userId === t1.userId) }))
-    // const combinedArr = userProfile && userProfile[0] && userProfile[0].followers.map((obj) => {
-    //     return filteredUserP.map((obj2) => {
 
-    //         return { userId: obj.userId, firstName: obj.firstName, lastName: obj.lastName, profileImageFile: obj2.profileImageFile }
-    //     })
-    // })
-
-    // combinedArr && combinedArr.map(function (row) {
-    //     return row.map(function (cell) {
-    //         return console.log("DGZ", cell);
-    //     });
-    // })
-    //console.log("filteredUserP", filteredUserP)
-    //console.log("followers", followers)
-    //console.log("profile.userProfiles", profile.userProfiles)
-    //console.log("a3", a3)
     return (
         <Dialog className={classes.dialogRoot} open={modalState} onClose={handleCloseModal}>
             <DialogTitle>
@@ -101,41 +85,7 @@ const FollowersPage = props => {
                                 </Grid>
                             )}
 
-                            {/* {userProfile && userProfile[0] && userProfile[0].followers.map((follower, index) =>
 
-                                <Grid style={{ height: '40px' }} className={index % 2 === 0 ? classes.even : classes.odd} key={index} container>
-                                    <Grid item xs={8}>
-                                        <Typography onClick={() => handleGoToProfile(follower.userId)} className={classes.typographyFullName} variant="body1">{`${follower.firstName} ${follower.lastName}`}</Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Avatar style={{ cursor: 'pointer' }} onClick={() => handleGoToProfile(follower.userId)} src={`data:image/jpeg;base64,${follower.profileImageFile}`} />
-                                    </Grid>
-
-                                </Grid>
-                            )} */}
-                            {/* {userProfile && userProfile[0] && userProfile[0].followers.map((follower, index) =>
-
-                                <Grid style={{ height: '40px' }} className={index % 2 === 0 ? classes.even : classes.odd} key={index} container>
-                                    <Grid item xs={8}>
-                                        <Typography onClick={() => handleGoToProfile(follower.userId)} className={classes.typographyFullName} variant="body1">{`${follower.firstName} ${follower.lastName}`}</Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Avatar style={{ cursor: 'pointer' }} onClick={() => handleGoToProfile(follower.userId)} src={`data:image/jpeg;base64,${follower.profileImageFile}`} />
-                                    </Grid>
-
-                                </Grid>
-                            )} */}
-                            {/* </Grid>
-                        <Grid item xs={4}>
-                            {myProfile && myProfile.map((profile, index) =>
-                                <Grid style={{ height: '40px' }} className={index % 2 === 0 ? classes.even : classes.odd} key={index} item xs={12}>
-                                    <Avatar className={classes.avatar} onClick={() => handleGoToProfile(profile.userId)} src={`data:image/jpeg;base64,${arrayBufferToBase64(profile.profileImageFile.data.data)}`} />
-
-                                </Grid>
-
-                            )
-                            }
-                        </Grid> */}
                         </Grid>
                         :
                         <Grid container justify="center">

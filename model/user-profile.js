@@ -16,7 +16,7 @@ const UserProfileSchema = schema({
     gender: String,
     motto: String,
     isPrivate: Boolean,
-
+    likedPost: [Object]
 })
 
 

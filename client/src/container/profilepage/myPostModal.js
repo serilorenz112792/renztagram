@@ -6,6 +6,7 @@ import {
 import NavigateBeforeSharpIcon from '@material-ui/icons/NavigateBeforeSharp';
 import NavigateNextSharpIcon from '@material-ui/icons/NavigateNextSharp';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -14,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import arrayBufferToBase64 from '../../utils/arrayBufferToBase64'
 import moment from 'moment'
 import CommentsContainer from './comments'
+import LikersModal from './likersModal'
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -56,9 +58,15 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 10,
         paddingLeft: 10
     },
-    likeIcon: {
+    likedIcon: {
         fontSize: 40,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        color: 'red',
+    },
+    unlikedIcon: {
+        fontSize: 40,
+        cursor: 'pointer',
+        //color: 'red',
     },
     commentIcon: {
         fontSize: 40,
@@ -180,7 +188,16 @@ const useStyles = makeStyles((theme) => ({
             color: '#f719e9'
         },
         fontWeight: 'bold'
-    }
+    },
+    liker: {
+        fontStyle: 'italic',
+        color: '#ad0ea3',
+        cursor: 'pointer',
+        fontWeight: 'bold'
+    },
+    likedGrid: {
+        paddingLeft: 10
+    },
     // deleteIcon: {
     //     color: '#ad0ea3',
 
@@ -193,7 +210,9 @@ const useStyles = makeStyles((theme) => ({
 const MyPostModal = (props) => {
     const classes = useStyles()
     const { history, state, handleClose, home, userId,
-        handleNextAndPrevSetIndex, auth, profile, index, FetchComments, AddComment, DeletePost, DeleteComment, ClearMessage } = props
+        handleNextAndPrevSetIndex, auth, profile, index, FetchComments,
+        AddComment, DeletePost, DeleteComment,
+        LikePost, UnlikePost, ClearMessage } = props
     const [modalState, setModalState] = useState(false)
 
     const [deleteModalState, setDeleteModalState] = useState(false)
@@ -209,6 +228,10 @@ const MyPostModal = (props) => {
     const [severity, setSeverity] = useState('')
     const [msg, setMsg] = useState('')
     const [indx, setIndx] = useState(0)
+
+    const [likersModalState, setLikersModalState] = useState(false)
+    // const [liker, setLiker] = useState([])
+    // const [likers, setLikers] = useState([])
     //const userId = auth.user && auth.user._id
 
     const myUsers = profile.users && profile.users
@@ -217,10 +240,17 @@ const MyPostModal = (props) => {
     let myPosts = home.posts && home.posts.filter(post => post.createdBy === userId)
     const myPostsId = myPosts[indx] && myPosts[indx]._id
     const myComments = home.comments && home.comments.filter((comment) => comment._id === myPostsId)
-
     const userIdThruAuth = auth.user && auth.user._id
+    const isMyUserInLikedBy = myComments[0] && myComments[0].likedBy.filter((obj) => obj._id === userIdThruAuth)
+
+    let liker = myComments[0] && myComments[0].likedBy[myComments[0] && myComments[0].likedBy.length - 1]
+    let likers = myComments[0] && myComments[0].likedBy
+    // let liker = []
+    // let likers = []
+    // console.log("userId,", userId)
+
     useEffect(() => {
-        //console.log("triggered!")
+
         //FetchComments()
         setIndx(index)
         setModalState(state)
@@ -242,7 +272,14 @@ const MyPostModal = (props) => {
             setMsg(home.deleteCommentMsg && home.deleteCommentMsg)
             ClearMessage()
         }
+        // liker = myComments[0] && myComments[0].likedBy[myComments[0] && myComments[0].likedBy.length - 1]
+        // likers = myComments[0] && myComments[0].likedBy
+        // setLiker(myComments[0] && myComments[0] && myComments[0].likedBy[myComments[0] && myComments[0] && myComments[0].likedBy.length - 1])
+        // setLikers(myComments[0] && myComments[0] && myComments[0].likedBy)
     }, [props])
+
+
+
     const handleCollapse = () => {
         setCollapse(!collapse)
 
@@ -316,6 +353,7 @@ const MyPostModal = (props) => {
         setComment('')
         setIsCommentBtnDisable(true)
         setIsCommentActive(false)
+
     }
     //console.log("indx", indx)
     //console.log("myPostId", myPostsId)
@@ -323,7 +361,12 @@ const MyPostModal = (props) => {
     //console.log("username[0]", username[0] && username[0])
     //console.log("userid", userId)
     //console.log("commendId", myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].userId)
-
+    // console.log("myComments", myComments[0])
+    // console.log("isMyUserInLikedBy", isMyUserInLikedBy)
+    // console.log("likers", likers && likers)
+    // console.log("LIKER", liker)
+    // console.log("myPostsId", myPostsId)
+    // console.log("indx", indx)
     const handleOpenDeleteModal = () => {
         //DeletePost({ postId: myPostsId })
         setDeleteModalState(!deleteModalState)
@@ -355,8 +398,40 @@ const MyPostModal = (props) => {
         }
     }
 
+    const handleLikePost = () => {
+        const data = {
+            postId: myPosts[indx] && myPosts[indx]._id,
+            userId: auth.user && auth.user._id
+        }
+        LikePost(data)
+        handleNextAndPrevSetIndex(indx)
+    }
+    const handleUnlikePost = () => {
+        const data = {
+            postId: myPosts[indx] && myPosts[indx]._id,
+            userId: auth.user && auth.user._id
+        }
+        UnlikePost(data)
+        handleNextAndPrevSetIndex(indx)
+    }
+    const handleOpenLikersModal = () => {
+        setLikersModalState(!likersModalState)
+
+    }
+    const handleCloseLikersModal = state => {
+        setLikersModalState(state)
+    }
+    const handleGoToProfileViaLiker = (userIdentifier) => {
+        if (userId !== userIdentifier) {
+            handleCloseLikersModal(false)
+            handleClose(false, 0)
+            history.push(`/profile/${userIdentifier}`)
+        }
+
+    }
     return (
         <Dialog style={{ backgroundColor: 'black' }} disableEscapeKeyDown disableBackdropClick open={modalState} onClose={handleCloseModal}>
+            <LikersModal handleGoToProfileViaLiker={handleGoToProfileViaLiker} likers={likers} state={likersModalState} handleClose={handleCloseLikersModal} history={history} />
             <DeleteModalConfirmation DeletePost={DeletePost} indx={indx} closeParentModal={handleCloseModal} myPostsId={myPostsId} deleteModalState={deleteModalState} handleCloseDeleteModal={handleCloseDeleteModal} />
             <Snackbar open={openSnack} autoHideDuration={3000} onClose={handleCloseSnack}>
                 <Alert onClose={handleCloseSnack} severity={severity}>
@@ -384,8 +459,13 @@ const MyPostModal = (props) => {
                         />
                     </Grid>
                     <Grid className={classes.iconsGrid} item xs={12}>
-                        <FavoriteBorderIcon className={classes.likeIcon} />
-                        <CommentIcon className={classes.commentIcon} />
+                        {isMyUserInLikedBy && isMyUserInLikedBy.length > 0 ? <FavoriteIcon onClick={handleUnlikePost} className={classes.likedIcon} /> : <FavoriteBorderIcon onClick={handleLikePost} className={classes.unlikedIcon} />}
+                        <CommentIcon onClick={handleCollapse} className={classes.commentIcon} />
+                    </Grid>
+                    <Grid className={classes.likedGrid} item xs={12}>
+                        {likers && likers.length > 0 ? <Typography variant="body1">
+                            <span>liked by </span><span onClick={() => handleGoToProfileViaLiker(liker && liker._id)} className={classes.liker}>{liker && liker._id === userIdThruAuth ? 'you ' : `${liker && liker.firstName} ${liker && liker.lastName} `}</span>{likers && likers.length > 1 ? <span><span>and</span>  <span onClick={handleOpenLikersModal} className={classes.liker}>others</span></span> : null}
+                        </Typography> : null}
                     </Grid>
                     <Grid className={classes.captionGrid} item xs={12}>
                         <Typography variant="body1">

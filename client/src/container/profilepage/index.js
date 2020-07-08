@@ -8,7 +8,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { makeStyles } from '@material-ui/core/styles'
 import MuiAlert from '@material-ui/lab/Alert';
 import { logoutAction } from '../loginpage/action'
-import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, deletePostAction, addPostAction, deleteCommentAction } from '../homepage/action'
+import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, deletePostAction, addPostAction, deleteCommentAction, likePostAction, unlikePostAction } from '../homepage/action'
 import { fetchUsersAction } from './action'
 
 import { editProfilePicAction, changePasswordAction, clearMessageAction as ClearChangePassMessageAction, friendRequestAction, unfriendRequestAction } from './edit-profile-container/action'
@@ -102,7 +102,7 @@ const ProfilePage = (props) => {
     const classes = useStyles()
     const { history, auth, home, profile, editProfile, Logout, FetchPost, match,
         FetchUsers, FetchComments, AddComment, DeletePost, AddPost, EditProfilePicture, ChangePassword,
-        ClearMessage, ClearChangePassMessage, FriendRequest, UnfollowRequest, DeleteComment } = props
+        ClearMessage, ClearChangePassMessage, FriendRequest, UnfollowRequest, DeleteComment, LikePost, UnlikePost } = props
     const [modalState, setModalState] = useState(false)
     const [addPostModalState, setAddPostModalState] = useState(false)
     const [msg, setMsg] = useState('')
@@ -123,7 +123,7 @@ const ProfilePage = (props) => {
     const myProfile = myUsers.filter(users => users._id === userId)
     //const myProfile = profile.userProfiles && profile.userProfiles.filter(userProfile => myUsers.some(user => userProfile.userId === user._id))
     useEffect(() => {
-        //console.log("triggered")
+        console.log("triggered")
         FetchPost()
         FetchUsers()
         FetchComments()
@@ -216,7 +216,7 @@ const ProfilePage = (props) => {
                     </Snackbar>
                     <AddPostModal ClearMsg={ClearMessage} home={home} auth={auth} AddPost={AddPost} state={addPostModalState} handleClose={handleCloseAddPostModal} />
 
-                    <MyPostModal DeleteComment={DeleteComment} history={history} userIdThruAuth={userIdThruAuth} FetchComments={FetchComments} userId={userId} handleNextAndPrevSetIndex={handleNextAndPrevSetIndex} DeletePost={DeletePost} ClearMessage={ClearMessage} AddComment={AddComment} auth={auth} home={home} profile={profile} index={index} state={modalState} handleClose={handleCloseModal} />
+                    <MyPostModal LikePost={LikePost} UnlikePost={UnlikePost} DeleteComment={DeleteComment} history={history} userIdThruAuth={userIdThruAuth} FetchComments={FetchComments} userId={userId} handleNextAndPrevSetIndex={handleNextAndPrevSetIndex} DeletePost={DeletePost} ClearMessage={ClearMessage} AddComment={AddComment} auth={auth} home={home} profile={profile} index={index} state={modalState} handleClose={handleCloseModal} />
                     {/* <Button onClick={handleLogout} variant="contained" color="primary">Logout</Button> */}
 
                     <EditProfilePicModal auth={auth} EditProfilePicture={EditProfilePicture} handleClose={handleCloseProfilePicModal} state={profilePicModal} />
@@ -322,7 +322,9 @@ ProfilePage.propTypes = {
     ClearChangePassMessage: PropTypes.func.isRequired,
     FriendRequest: PropTypes.func.isRequired,
     UnfollowRequest: PropTypes.func.isRequired,
-    DeleteComment: PropTypes.func.isRequired
+    DeleteComment: PropTypes.func.isRequired,
+    LikePost: PropTypes.func.isRequired,
+    UnlikePost: PropTypes.func.isRequired
 }
 const mapStateToProps = state => ({
     auth: state.auth,
@@ -346,7 +348,9 @@ const mapDispatchToProps = dispatch => ({
         ClearChangePassMessage: ClearChangePassMessageAction,
         FriendRequest: friendRequestAction,
         UnfollowRequest: unfriendRequestAction,
-        DeleteComment: deleteCommentAction
+        DeleteComment: deleteCommentAction,
+        LikePost: likePostAction,
+        UnlikePost: unlikePostAction
     }, dispatch)
 })
 export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage)

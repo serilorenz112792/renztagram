@@ -36,3 +36,12 @@ export async function deleteCommentApi({ postId, userId, commentId, auth }) {
     return await axios.put(`/api/user/delete-comment/${postId}`, body, tokenConfig(auth))
 }
 
+export async function likePostApi({ postId, userId, auth }) {
+    const body = JSON.stringify({ userId })
+    return await axios.put(`/api/post/like-post/${postId}`, body, tokenConfig(auth))
+}
+
+export async function unlikePostApi({ postId, userId, auth }) {
+    const body = JSON.stringify({ userId })
+    return await axios.put(`/api/post/unlike-post/${postId}`, body, tokenConfig(auth))
+}

@@ -43,9 +43,11 @@ const FollowingPage = props => {
     const [modalState, setModalState] = useState(false)
     useEffect(() => {
         setModalState(state)
+
+        //return () => setModalState(!modalState)
     }, [props])
     const handleCloseModal = () => {
-        handleClose(!modalState)
+        handleClose(prevState => !prevState)
     }
     const handleGoToProfile = userId => {
         handleClose(false)
@@ -58,10 +60,7 @@ const FollowingPage = props => {
     const filteredUserP = profile.userProfiles && profile.userProfiles.filter(userP => following.some(follower => userP.userId === follower.userId))
     const a3 = userProfile && userProfile[0] && userProfile[0].following.map(t1 => ({ ...t1, ...filteredUserP.find(t2 => t2.userId === t1.userId) }))
 
-    //console.log("userProfile sa followers", userProfile && userProfile[0] && userProfile[0].followers.length)
-    //console.log("Profile", myProfile)
-    //const combinedArr = [...userP, ...myProfile]
-    //console.log("CombinedArr", combinedArr)
+
     return (
         <Dialog className={classes.dialogRoot} open={modalState} onClose={handleCloseModal}>
             <DialogTitle>
@@ -85,19 +84,7 @@ const FollowingPage = props => {
 
                                 </Grid>
                             )}
-                            {/* {userProfile && userProfile[0] && userProfile[0].following.map((follower, index) =>
 
-                                <Grid style={{ height: '40px' }} className={index % 2 === 0 ? classes.even : classes.odd} key={index} container>
-                                    <Grid item xs={8}>
-                                        <Typography onClick={() => handleGoToProfile(follower.userId)} className={classes.typographyFullName} variant="body1">{`${follower.firstName} ${follower.lastName}`}</Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Avatar style={{ cursor: 'pointer' }} onClick={() => handleGoToProfile(follower.userId)} src={`data:image/jpeg;base64,${follower.profileImageFile}`} />
-                                    </Grid>
-                                </Grid>
-
-
-                            )} */}
                         </Grid>
                         :
                         <Grid container justify="center">

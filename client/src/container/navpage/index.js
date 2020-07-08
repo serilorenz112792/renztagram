@@ -28,7 +28,6 @@ import { NavLink } from 'react-router-dom'
 import { fetchUserProfileAction } from '../profilepage/action'
 import dotenv from 'dotenv'
 import arrayBufferToBase64 from '../../utils/arrayBufferToBase64'
-import SearchPopup from './searchpopup'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Logo from '../../assets/rsz_generatedtext.png'
 dotenv.config()

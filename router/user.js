@@ -35,6 +35,7 @@ router.post('/register', async (req, res) => {
         gender: 'Male',
         motto: '',
         isPrivate: false,
+        likedPost: []
     })
     bcrypt.hash(password, 10, async (err, hash) => {
         if (err) return json.status(400).json({ error: err })

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Grid, Container, CircularProgress, BottomNavigation, BottomNavigationAction, Snackbar, Typography, Tooltip, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import MuiAlert from '@material-ui/lab/Alert';
-import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, addPostAction, deleteCommentAction } from './action'
+import { fetchPostAction, fetchCommentAction, addCommentAction, clearMessageAction, addPostAction, deleteCommentAction, likePostAction, unlikePostAction } from './action'
 import { fetchUserProfileAction, fetchUsersAction } from '../profilepage/action'
 import AddIcon from '@material-ui/icons/Add';
 import { bindActionCreators } from 'redux'
@@ -86,7 +86,7 @@ const HomePage = (props) => {
     const classes = useStyles()
     const { auth, home, profile, FetchPost,
         FetchComment, FetchUserProfiles, FetchUsers,
-        AddComment, AddPost, DeleteComment,
+        AddComment, AddPost, DeleteComment, LikePost, UnlikePost,
         AddLinearProgress, ClearMsg, history } = props
     const [modalState, setModalState] = useState(false)
     // const [openSnack, setOpenSnack] = useState(false)
@@ -97,7 +97,7 @@ const HomePage = (props) => {
         FetchUserProfiles()
         FetchUsers()
         FetchComment()
-
+        console.log("INDEX TRIGGERED")
     }, [])
     // const handleCloseSnack = (event, reason) => {
     //     if (reason === 'clickaway') {
@@ -130,7 +130,7 @@ const HomePage = (props) => {
                             home.isLoading ? <Grid style={{ height: 450 }}><div className={classes.circularLoading} ><CircularProgress color="secondary" /></div></Grid> :
                                 home && home.posts.map((post, ind) =>
 
-                                    <Post index={ind} DeleteComment={DeleteComment} FetchComment={FetchComment} ClearMsg={ClearMsg} AddComment={AddComment} history={history} home={home} auth={auth} profile={profile} key={post._id} post={post} />
+                                    <Post index={ind} UnlikePost={UnlikePost} LikePost={LikePost} DeleteComment={DeleteComment} FetchComment={FetchComment} ClearMsg={ClearMsg} AddComment={AddComment} history={history} home={home} auth={auth} profile={profile} key={post._id} post={post} />
                                 )
                         }
                     </Grid>
@@ -171,6 +171,8 @@ HomePage.propTypes = {
     AddComment: PropTypes.func.isRequired,
     AddPost: PropTypes.func.isRequired,
     DeleteComment: PropTypes.func.isRequired,
+    LikePost: PropTypes.func.isRequired,
+    UnlikePost: PropTypes.func.isRequired,
     ClearMsg: PropTypes.func.isRequired
 }
 const mapStateToProps = state => ({
@@ -187,6 +189,8 @@ const mapDispatchToProps = dispatch => ({
         AddComment: addCommentAction,
         AddPost: addPostAction,
         DeleteComment: deleteCommentAction,
+        LikePost: likePostAction,
+        UnlikePost: unlikePostAction,
         ClearMsg: clearMessageAction
     }, dispatch)
 })

@@ -9,7 +9,6 @@ import { LOAD_USER, LOGIN, REGISTER } from './constant'
 const authState = state => state.auth
 function* LoadUserSaga() {
     const auth = yield select(authState)
-    console.log("auth", auth)
     try {
         const response = yield call(loadUserApi, auth)
         if (response.status === 200) {

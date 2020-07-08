@@ -11,8 +11,8 @@ const postSchema = schema({
     createdBy: {
         type: String
     },
-    comments: [Object]
-
+    comments: [Object],
+    likedBy: [Object]
 }, {
     timestamps: true
 })

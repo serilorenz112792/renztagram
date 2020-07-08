@@ -7,6 +7,7 @@ import {
     Collapse, CircularProgress, Snackbar, Tooltip
 } from '@material-ui/core'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -14,6 +15,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import CommentsContainer from './comments'
 import dotenv from 'dotenv'
 import arrayBufferToBase64 from '../../utils/arrayBufferToBase64'
+import LikersModal from './likersModal'
 dotenv.config()
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,16 +48,25 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: 10
     },
     captionGrid: {
-        paddingTop: 10,
+        //paddingTop: 10,
+        paddingLeft: 10
+    },
+    likedGrid: {
         paddingLeft: 10
     },
     iconsGrid: {
         paddingTop: 10,
         paddingLeft: 10
     },
-    likeIcon: {
+    likedIcon: {
         fontSize: 40,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        color: 'red',
+    },
+    unlikedIcon: {
+        fontSize: 40,
+        cursor: 'pointer',
+        //color: 'red',
     },
     commentIcon: {
         fontSize: 40,
@@ -102,6 +113,12 @@ const useStyles = makeStyles((theme) => ({
     allCommentsPaper: {
         width: 'inherit',
 
+    },
+    liker: {
+        fontStyle: 'italic',
+        color: '#ad0ea3',
+        cursor: 'pointer',
+        fontWeight: 'bold'
     }
 }))
 function Alert(props) {
@@ -110,7 +127,7 @@ function Alert(props) {
 
 const Post = (props) => {
     const classes = useStyles()
-    const { post, profile, auth, home, index, history, AddComment, DeleteComment, ClearMsg } = props
+    const { post, profile, auth, home, index, history, AddComment, DeleteComment, LikePost, UnlikePost, ClearMsg } = props
     const [profilePicPath, setProfilePicPath] = useState('')
     const [postImagePath, setPostImagePath] = useState('')
     const [imageFile, setImageFile] = useState('')
@@ -129,6 +146,11 @@ const Post = (props) => {
     const [commentCreator, setCommentCreator] = useState('')
     const [commentContent, setCommentContent] = useState('')
 
+
+    const [liker, setLiker] = useState([])
+    const [likers, setLikers] = useState([])
+    const [likersModalState, setLikersModalState] = useState(false)
+
     const userId = auth.user && auth.user._id
     const myUsers = profile.users && profile.users
     const myProfile = profile.userProfiles && profile.userProfiles.filter(userProfile => myUsers.some(user => userProfile.userId === user._id))
@@ -136,12 +158,15 @@ const Post = (props) => {
     const username = myUsers && myUsers.filter(user => user._id === post.createdBy && post.createdBy)
 
     const myComments = home.comments && home.comments.filter((comment) => comment._id === post._id && post._id)
+    //const isMyUserInLikedBy = post.likedBy.filter(likeBy => likeBy._id === userId)
+    const isMyUserInLikedBy = myComments[0] && myComments[0].likedBy.filter((obj) => obj._id === userId)
+    //const isLikedByMe = isMyUserInLikedBy[0] && isMyUserInLikedBy[0].likedBy.filter(likeBy => likeBy._id === userId)
     //console.log("myComments", myComments[0] && myComments[0].comments)
     //const email = username.email.substring(0)
     //console.log(myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.substring(0, myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.lastIndexOf("@")))
-    //console.log("myUsers", myUsers)
-    //console.log("myProfilePic", myProfilePic[0])
-    //console.log("username", post.comments[0] && post.comments[0].userId)
+    //console.log("liker", liker)
+    //console.log("myComments", myComments)
+    //console.log("isMyUserInLikedBy", isMyUserInLikedBy && isMyUserInLikedBy.length)
 
     useEffect(() => {
         // if (process.env.NODE_ENV === 'production') {
@@ -184,7 +209,8 @@ const Post = (props) => {
         setCommentCreator(myComments[0] && myComments[0].comments && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.substring(0, myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].email.lastIndexOf("@")))
         setCommentContent(myComments[0] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1] && myComments[0].comments[myComments[0] && myComments[0].comments.length - 1].comment)
 
-
+        setLiker(myComments[0] && myComments[0].likedBy[myComments[0] && myComments[0].likedBy.length - 1])
+        setLikers(myComments[0] && myComments[0].likedBy)
         //SET BUFFER TO BASE64
         setProfilePicPath(arrayBufferToBase64(myProfilePic[0] && myProfilePic[0].profileImageFile && myProfilePic[0].profileImageFile.data.data))
         setImageFile(arrayBufferToBase64(post.imgFile && post.imgFile.data.data))
@@ -243,11 +269,37 @@ const Post = (props) => {
         DeleteComment(data)
     }
 
+    const handleLikePost = () => {
+        const data = {
+            postId: post._id,
+            userId: auth.user && auth.user._id
+        }
+        LikePost(data)
+    }
+    const handleUnlikePost = () => {
+        const data = {
+            postId: post._id,
+            userId: auth.user && auth.user._id
+        }
+        UnlikePost(data)
+    }
 
-    //console.log("post", post)
+    const handleOpenLikersModal = () => {
+        setLikersModalState(!likersModalState)
+    }
+
+    const handleCloseLikersModal = state => {
+        setLikersModalState(state)
+    }
+
+    const handleGoToProfileViaLiker = (userId) => {
+        history.push(`/profile/${userId}`)
+    }
+    //console.log("post", likers)
     //console.log("postImagePath", postImagePath)
     return (
         <Grid className={classes.root}>
+            <LikersModal history={history} profile={profile} likers={likers} state={likersModalState} handleClose={handleCloseLikersModal} />
             <Paper>
                 <Card>
                     <CardContent>
@@ -279,8 +331,13 @@ const Post = (props) => {
                             </Grid>
                             <Grid className={classes.iconsGrid} item xs={12}>
 
-                                <FavoriteBorderIcon className={classes.likeIcon} />
-                                <CommentIcon className={classes.commentIcon} />
+                                {isMyUserInLikedBy && isMyUserInLikedBy.length > 0 ? <FavoriteIcon onClick={handleUnlikePost} className={classes.likedIcon} /> : <FavoriteBorderIcon onClick={handleLikePost} className={classes.unlikedIcon} />}
+                                {myComments[0] && myComments[0].comments && myComments[0].comments.length > 0 ? <CommentIcon onClick={handleCollapse} className={classes.commentIcon} /> : <CommentIcon className={classes.commentIcon} />}
+                            </Grid>
+                            <Grid className={classes.likedGrid} item xs={12}>
+                                {likers && likers.length > 0 ? <Typography variant="body1">
+                                    <span>liked by </span><span onClick={() => handleGoToProfileViaLiker(liker && liker._id)} className={classes.liker}>{liker && liker._id === userId ? 'you ' : `${liker && liker.firstName} ${liker && liker.lastName} `}</span>{likers && likers.length > 1 ? <span><span>and</span>  <span onClick={handleOpenLikersModal} className={classes.liker}>others</span></span> : null}
+                                </Typography> : null}
                             </Grid>
                             <Grid className={classes.captionGrid} item xs={12}>
                                 <Typography variant="body1">
