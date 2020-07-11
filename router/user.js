@@ -51,6 +51,7 @@ router.post('/register', async (req, res) => {
 })
 router.get('/fetch-users', authentication, async (req, res) => {
     await User.find()
+        .select('-password')
         .then((users) => {
             res.status(200).json(users)
         })

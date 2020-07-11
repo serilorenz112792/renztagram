@@ -460,7 +460,7 @@ const MyPostModal = (props) => {
                     </Grid>
                     <Grid className={classes.iconsGrid} item xs={12}>
                         {isMyUserInLikedBy && isMyUserInLikedBy.length > 0 ? <FavoriteIcon onClick={handleUnlikePost} className={classes.likedIcon} /> : <FavoriteBorderIcon onClick={handleLikePost} className={classes.unlikedIcon} />}
-                        <CommentIcon onClick={handleCollapse} className={classes.commentIcon} />
+                        {myComments[0] && myComments[0].comments.length > 0 ? <CommentIcon onClick={handleCollapse} className={classes.commentIcon} /> : <CommentIcon className={classes.commentIcon} />}
                     </Grid>
                     <Grid className={classes.likedGrid} item xs={12}>
                         {likers && likers.length > 0 ? <Typography variant="body1">

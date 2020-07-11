@@ -316,7 +316,7 @@ const NavBar = (props) => {
                         <MenuIcon />
                     </IconButton> */}
                     <Typography className={classes.title} variant="h6" noWrap>
-                        {auth.isAuthenticated ? <NavLink style={{ textDecoration: 'none', color: '#FFF' }} to="/home"><div style={{ width: '150px', height: '40px' }}><img style={{ width: 'inherit', height: 'inherit' }} src={Logo} alt="Main Logo" /></div></NavLink> : <div style={{ width: '150px', height: '40px' }}><img style={{ width: 'inherit', height: 'inherit' }} src={Logo} alt="Main Logo" /></div>}
+                        {auth.isAuthenticated ? <NavLink style={{ textDecoration: 'none', color: '#FFF' }} to="/home"><div style={{ width: '150px', height: '40px' }}><img style={{ width: 'inherit', height: 'inherit' }} src={Logo} alt="Main Logo" /></div></NavLink> : null}
                     </Typography>
                     <div>
 

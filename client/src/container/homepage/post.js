@@ -225,7 +225,10 @@ const Post = (props) => {
         history.push(`/profile/${userId}`)
     }
     const handleCollapse = () => {
+
+
         setCollapse(!collapse)
+
 
     }
     const handleComment = (e) => {
