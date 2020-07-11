@@ -27,16 +27,12 @@ const useStyles = makeStyles((theme) => ({
     facebookIcon: {
         color: 'rgb(17, 82, 147)',
         fontSize: 50,
-        "&:hover": {
-            opacity: .7
-        }
+
     },
     instagramIcon: {
         fontSize: 50,
         color: '#fb3958',
-        "&:hover": {
-            opacity: .7
-        }
+
     },
     backgroundImage: {
         height: 150,
@@ -56,6 +52,16 @@ const useStyles = makeStyles((theme) => ({
         color: '#FFF',
         "&:hover": {
             backgroundColor: '#f719e9'
+        }
+    },
+    fbbtn: {
+        "&:hover": {
+            backgroundColor: 'lightblue'
+        }
+    },
+    igbtn: {
+        "&:hover": {
+            backgroundColor: 'lightpink'
         }
     }
 }))
@@ -93,14 +99,14 @@ const WelcomePage = props => {
                     </Grid>
                     <Grid style={{ paddingTop: 70 }} container justify="center" item xs={12}>
                         <Typography variant="body1">
-                            follow me @
-                       </Typography>
+                            follow me <b>@</b>
+                        </Typography>
                     </Grid>
                     <Grid container justify="flex-end" item xs={6}>
-                        <Button ><a target="_blank" href="https://www.facebook.com/serilo.renz/"> <FacebookIcon className={classes.facebookIcon} /></a></Button>
+                        <Button className={classes.fbbtn}><a target="_blank" href="https://www.facebook.com/serilo.renz/"> <FacebookIcon className={classes.facebookIcon} /></a></Button>
                     </Grid>
                     <Grid container justify="flex-start" item xs={6}>
-                        <Button><a target="_blank" href="https://www.instagram.com/rnzsrl_/"> <InstagramIcon className={classes.instagramIcon} /></a> </Button>
+                        <Button className={classes.igbtn}><a target="_blank" href="https://www.instagram.com/rnzsrl_/"> <InstagramIcon className={classes.instagramIcon} /></a> </Button>
                     </Grid>
                 </Grid>
 

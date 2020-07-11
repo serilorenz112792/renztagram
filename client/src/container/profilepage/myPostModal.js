@@ -429,8 +429,16 @@ const MyPostModal = (props) => {
         }
 
     }
+    const keyDown = (e) => {
+        if (e.keyCode === 37) {
+            handlePrev()
+        }
+        else if (e.keyCode === 39) {
+            handleNext()
+        }
+    }
     return (
-        <Dialog style={{ backgroundColor: 'black' }} disableEscapeKeyDown disableBackdropClick open={modalState} onClose={handleCloseModal}>
+        <Dialog tabIndex={indx} onKeyDown={keyDown} style={{ backgroundColor: 'black' }} disableEscapeKeyDown disableBackdropClick open={modalState} onClose={handleCloseModal}>
             <LikersModal handleGoToProfileViaLiker={handleGoToProfileViaLiker} likers={likers} state={likersModalState} handleClose={handleCloseLikersModal} history={history} />
             <DeleteModalConfirmation DeletePost={DeletePost} indx={indx} closeParentModal={handleCloseModal} myPostsId={myPostsId} deleteModalState={deleteModalState} handleCloseDeleteModal={handleCloseDeleteModal} />
             <Snackbar open={openSnack} autoHideDuration={3000} onClose={handleCloseSnack}>
