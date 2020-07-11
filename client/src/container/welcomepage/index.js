@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Grid, Container, CardMedia, Typography, Button } from '@material-ui/core'
+import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
@@ -59,13 +60,18 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 const WelcomePage = props => {
-    const { history } = props
+    const { history, auth } = props
     const classes = useStyles()
+    useEffect(() => {
+        if (auth.isAuthenticated) {
+            history.push('/home')
+        }
+    }, [auth])
     const handleGoToLogin = () => {
         history.push('/login')
     }
     return (
-        <React.Fragment className={classes.rootContainer}>
+        <div className={classes.rootContainer}>
             <div className={classes.backgroundImage}>
                 <img className={classes.image} src={stars} alt="stars" />
             </div>
@@ -79,27 +85,30 @@ const WelcomePage = props => {
                     </Grid>
                     <Grid item xs={12}>
                         <Typography className={classes.goodTo} variant="body1">
-                            Good to see you here
+                            Welcome to Renztagram
                         </Typography>
                     </Grid>
                     <Grid container justify="center" item xs={12}>
                         <Button variant="contained" onClick={handleGoToLogin} className={classes.loginBtn}>Login</Button>
                     </Grid>
-                </Grid>
-                <Grid className={classes.bottomButtons} container>
-
-                    <Grid container justify="center" item xs={6}>
+                    <Grid style={{ paddingTop: 70 }} container justify="center" item xs={12}>
+                        <Typography variant="body1">
+                            follow me @
+                       </Typography>
+                    </Grid>
+                    <Grid container justify="flex-end" item xs={6}>
                         <Button ><a target="_blank" href="https://www.facebook.com/serilo.renz/"> <FacebookIcon className={classes.facebookIcon} /></a></Button>
                     </Grid>
-                    <Grid container justify="center" item xs={6}>
+                    <Grid container justify="flex-start" item xs={6}>
                         <Button><a target="_blank" href="https://www.instagram.com/rnzsrl_/"> <InstagramIcon className={classes.instagramIcon} /></a> </Button>
                     </Grid>
-
-
                 </Grid>
+
             </Container >
-        </React.Fragment>
+        </div>
     )
 }
-
-export default WelcomePage
+const mapStateToProps = state => ({
+    auth: state.auth
+})
+export default connect(mapStateToProps, {})(WelcomePage)

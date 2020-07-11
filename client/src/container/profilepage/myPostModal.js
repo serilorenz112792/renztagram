@@ -529,8 +529,8 @@ const MyPostModal = (props) => {
             <DialogActions>
                 {home.posts && home.posts.filter(post => post.createdBy === userId).length > 1 ?
                     <div>
-                        <NavigateBeforeSharpIcon fontSize="large" color="secondary" onClick={handlePrev} className={classes.navigatePrev} >Previous</NavigateBeforeSharpIcon>
-                        <NavigateNextSharpIcon fontSize="large" color="primary" onClick={handleNext} className={classes.navigateNext} >Next</NavigateNextSharpIcon>
+                        <NavigateBeforeSharpIcon onKeyDown={handlePrev} fontSize="large" color="secondary" onClick={handlePrev} className={classes.navigatePrev} >Previous</NavigateBeforeSharpIcon>
+                        <NavigateNextSharpIcon onKeyDown={handleNext} fontSize="large" color="primary" onClick={handleNext} className={classes.navigateNext} >Next</NavigateNextSharpIcon>
                     </div>
                     : null
                 }
