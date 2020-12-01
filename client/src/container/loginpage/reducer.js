@@ -10,7 +10,7 @@ const initialState = {
     isLoading: false,
     isLoadingRegister: false,
     user: null,
-    token: localStorage.getItem('token'),
+    token: localStorage.getItem('accessToken'),
     isAuthenticated: false,
     msg: {},
     error: {}
@@ -37,7 +37,7 @@ const authReducer = (state = initialState, action) => {
             }
         }
         case LOGIN_SUCCESS:
-            localStorage.setItem('token', payload.token)
+            localStorage.setItem('accessToken', payload.token)
             return {
                 ...state,
                 isAuthenticated: true,
@@ -72,7 +72,7 @@ const authReducer = (state = initialState, action) => {
                 error: payload.error
             }
         case LOGOUT:
-            localStorage.removeItem('token')
+            localStorage.removeItem('accessToken')
             return {
                 ...state,
                 isLoading: false,
